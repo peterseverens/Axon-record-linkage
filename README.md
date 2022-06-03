@@ -1,6 +1,6 @@
-# axon
+# Axon record linkage
 
-usage
+How it works
 
 Axon is developed to link datasets that cannot be linked on hard or even soft criteria. Axon links datasets by evaluating and then applying Bayesian relations between fields in both sets.
 Axon uses a two step approach.
