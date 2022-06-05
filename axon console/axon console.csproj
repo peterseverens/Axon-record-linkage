@@ -90,7 +90,6 @@
     <Compile Include="dataResults.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="testdb.cs" />
     <EmbeddedResource Include="AxonForm.resx">
       <DependentUpon>AxonForm.cs</DependentUpon>
     </EmbeddedResource>
