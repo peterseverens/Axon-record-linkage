@@ -22,7 +22,7 @@ namespace axon_console
     public partial class AxonForm : Form
     {
 
-        //testDb AxD = new testDb();
+      
 
         DateTime startDateTime;
         DateTime endDateTime;
@@ -119,28 +119,18 @@ namespace axon_console
         }
         public void axonGoAsync(string inputDir, string inputFile, string outputDir, string cachDir, string delimeter, Boolean multi, byte iterateN)
         {
-            Boolean GraphicShow = false;
 
-
-
-
-            string dbFile = "axonn_temp_lbz_opname_match2";
-
-
-            //string inputFileCombine = outputDir + "\\" + "combined " + Path.GetFileName(inputDir) + ".prt";
-            //System.IO.StreamWriter fileCombine = new System.IO.StreamWriter(inputFileCombine);
-
-            string test = Path.GetDirectoryName(inputDir);
+            Boolean GraphicShowNow = true;
 
             string[] files = new string[1];
             if (!multi)
             {
                 files[0] = inputFile;
-                GraphicShow = true;
+            
             }
             else
             {
-                GraphicShow = true;
+                
                 try
                 {
                     files = Directory.GetFiles(inputDir, "*.prt", SearchOption.AllDirectories);
@@ -186,22 +176,27 @@ namespace axon_console
                     AxonCalc10 AxC = new AxonCalc10();
 
 
-                    AxC.Delimeter = ",";
+                    AxC.Delimeter = '/';
                     AxC.CategoryFrequenciesShow = 1;
 
 
-                    AxC.Linkmethod = linkmethodNow;
+                    
+
+                    AxC.Linkmethod = linkmethodNow;  
                     AxC.ThresHoldCriterium = ThresHoldCriteriumNow;
-                    AxC.AutoSelection = 0;
-                    AxC.CriteriumHandling = 3; //reocords above threshold
+                    AxC.AutoSelection = 0; //all fields are used to calculate likelihood.
+                    AxC.CriteriumHandling = 3; //get all reocords above threshold
+                    AxC.MissingsInclude = 1;  //missing categories are also used to calculate Likelihood
+                    AxC.ThresHoldPercentageCriterium = 0;
+                    AxC.DifferenceCriterium = -99;
 
                     AxC.chi2WithinShow = 0;
                     AxC.Chi2BetweenShow = 1;
-
                     AxC.SelectedIdentifiersShow = 1;
                     AxC.DistributionLikelihoodsShow = 1;
                     AxC.LinkedSetsShow = 0;
                     AxC.DistributionLinkedRecordsNShow = 1;
+                    if (GraphicShowNow) AxC.GraphicShow = 1; else AxC.GraphicShow = 0;
 
 
                     string inputFileNow = inputDir + "\\" + files[iNow] + ".prt"; ;
@@ -221,30 +216,29 @@ namespace axon_console
                     StreamWriter fileGraph = new System.IO.StreamWriter(linkGraphFile);
 
 
-                    UInt64[] resultData = new UInt64[9];
+             
+
+
 
 
                     StreamReader fileIn = new System.IO.StreamReader(inputFileNow);
-                    resultData = AxC.SetsGetDelimetedPart1(fileIn, '/');
+
+                    dataCheckResults resultDataCheck = AxC.SetsGetDelimetedCountAndCheck(fileIn);
 
 
-                    UInt64 Ns = resultData[0];
-                    UInt64 Nr = resultData[1];
-                    UInt16 Vc0 = Convert.ToUInt16(resultData[2]);
-                    UInt16 Vc = Convert.ToUInt16(resultData[3]);
-                    UInt16 Vc1 = Convert.ToUInt16(resultData[4]);
-                    UInt64 rpos = resultData[5];
+                    UInt64 Ns = resultDataCheck.Ns;
+                    UInt64 Nr = resultDataCheck.Nr;
+                    UInt16 Vc0 = resultDataCheck.Vc0;
+                    UInt16 Vc = resultDataCheck.Vc;
+                    UInt16 Vc1 = resultDataCheck.Vc1;
+                    UInt64 rpos = resultDataCheck.rpos;
 
 
 
                     AxC.arraysIniGeneric(Vc0, Vc, Vc1);
 
-                    string resultArraysData = AxC.arraysIniData(Ns, Nr, Vc0, Vc, Vc1);
-                    if (resultArraysData == "ok")
-                    {
-
-                    }
-                    else
+                    string resultArraysData = AxC.arraysIniData();
+                    if (resultArraysData != "ok")
                     {
                         result_info.Text = "cannot create data arrays. Total number of blocks: " + Ns.ToString() + " Total number of records: " + Nr.ToString();
                         return;
@@ -253,12 +247,11 @@ namespace axon_console
 
 
                     fileIn = new System.IO.StreamReader(inputFileNow);
-                    resultData = AxC.SetsGetDelimetedPart2(fileIn, '/', Ns, Nr, Vc0, Vc, Vc1, rpos);
+                    dataReadResults resulDataReading = AxC.SetsGetDelimetedReadAllData(fileIn,  rpos);
 
-                    Ns = resultData[0];
-                    Nr = resultData[1];
-                    AxC.Ns = Ns;
-                    AxC.Nr = Nr;
+                    Ns = resulDataReading.Ns;
+                    Nr = resulDataReading.Nr;
+
 
 
                     if (Ns > 0)
@@ -276,17 +269,7 @@ namespace axon_console
                             }
                             fileCopy.Close();
                         }
-                        //if (multi)
-                        //{
-                        //    if (i == 0)
-                        //    {
-                        //        AxC.SetsWriteDelimeted(fileCombine, delimeter, false);
-                        //    }
-                        //    else
-                        //    {
-                        //        AxC.SetsWriteDelimeted(fileCombine, delimeter, true);
-                        //    }
-                        //}
+                       
 
                         fileInfo.Write(AxC.OutputFileInfo(inputFileNow));
                         fileInfo.Close();
@@ -314,7 +297,7 @@ namespace axon_console
 
 
 
-                        string dChar = AxC.Delimeter;
+                        char dChar = AxC.Delimeter;
 
 
                         Graphics g = graph_linkage.CreateGraphics();
@@ -341,7 +324,7 @@ namespace axon_console
 
                             //if (!multi) GraphLikelihoods2(AxC.Linkmethod, ii, AxC.scoresN , -99999, 99999, AxC.ThresHoldCriterium, AxC.Nsmall, percentageLinked);
 
-                            if (GraphicShow) writeGraphScores(AxC.scoresN, AxC.scoresV, AxC.Nsmall, AxC.Linkmethod, AxC.ThresHoldCriterium, percentageLinked, fileGraph);
+                            if (AxC.GraphicShow  == 1) writeGraphScores(AxC.scoresN, AxC.scoresV, AxC.Nsmall, AxC.Linkmethod, AxC.ThresHoldCriterium, percentageLinked, fileGraph);
 
 
                         }
@@ -427,7 +410,7 @@ namespace axon_console
 
 
             }
-            if (GraphicShow)
+            if (GraphicShowNow = true)
             {
                 string[] filesGra = new string[files.Length];
                 foreach (var t in task)
@@ -450,20 +433,12 @@ namespace axon_console
         public void axonGoSync(string inputDir, string inputFile, string outputDir, string cachDir, string delimeter, Boolean multi, byte iterateN)
         {
 
-
+           
 
 
             Boolean GraphicShow = false;
 
 
-
-            string dbFile = "axonn_temp_lbz_opname_match2";
-
-
-            //string inputFileCombine = outputDir + "\\" + "combined " + Path.GetFileName(inputDir) + ".prt";
-            //System.IO.StreamWriter fileCombine = new System.IO.StreamWriter(inputFileCombine);
-
-            string test = Path.GetDirectoryName(inputDir);
 
             string[] files = new string[1];
             if (!multi)
@@ -489,19 +464,8 @@ namespace axon_console
             {
                 files[i] = Path.GetFileNameWithoutExtension(files[i]);
             }
-
-            Task[] task = new Task[files.Length];
-
-            UInt16[] taskId = new UInt16[Int16.MaxValue];
-
-
-
-
-
-
+             
             Double ThresHoldCriteriumNow = Convert.ToDouble(textBox_ThresHoldCriterium.Text);
-
-
 
             string text = "";
             for (UInt16 i = 0; i < files.Length; i++)
@@ -514,23 +478,27 @@ namespace axon_console
                 AxonCalc10 AxC = new AxonCalc10();
 
 
-                AxC.Delimeter = ",";
+                AxC.Delimeter = '/';
                 AxC.CategoryFrequenciesShow = 1;
-
+                 
 
                 AxC.Linkmethod = linkmethodNow;
                 AxC.ThresHoldCriterium = ThresHoldCriteriumNow;
-                AxC.AutoSelection = 0;
-                AxC.CriteriumHandling = 3; //reocords above threshold
+                AxC.AutoSelection = 0; //all fields are used to calculate likelihood.
+                AxC.CriteriumHandling = 3; //get all reocords above threshold
+                AxC.MissingsInclude = 1;  //missing categories are also used to calculate Likelihood
+                AxC.ThresHoldPercentageCriterium = 0;
+                AxC.DifferenceCriterium = -99;
 
                 AxC.chi2WithinShow = 0;
                 AxC.Chi2BetweenShow = 1;
-
                 AxC.SelectedIdentifiersShow = 1;
                 AxC.DistributionLikelihoodsShow = 1;
                 AxC.LinkedSetsShow = 0;
                 AxC.DistributionLinkedRecordsNShow = 1;
+                AxC.GraphicShow = 1;
 
+                 
 
                 string inputFileNow = inputDir + "\\" + files[iNow] + ".prt"; ;
                 string inputFileCopy = outputDir + "\\" + files[iNow] + ".prc";
@@ -547,45 +515,36 @@ namespace axon_console
                 StreamWriter fileReport = new System.IO.StreamWriter(linkReportFile);
                 StreamWriter fileScores = new System.IO.StreamWriter(linkOutputFile);
                 StreamWriter fileGraph = new System.IO.StreamWriter(linkGraphFile);
-
-
-                UInt64[] resultData = new UInt64[9];
-
-
+                 
                 StreamReader fileIn = new System.IO.StreamReader(inputFileNow);
-                resultData = AxC.SetsGetDelimetedPart1(fileIn, '/');
+  
+                dataCheckResults resultDataCheck = AxC.SetsGetDelimetedCountAndCheck(fileIn);
 
 
-                UInt64 Ns = resultData[0];
-                UInt64 Nr = resultData[1];
-                UInt16 Vc0 = Convert.ToUInt16(resultData[2]);
-                UInt16 Vc = Convert.ToUInt16(resultData[3]);
-                UInt16 Vc1 = Convert.ToUInt16(resultData[4]);
-                UInt64 rpos = resultData[5];
-
+                UInt64 Ns = resultDataCheck.Ns;
+                UInt64 Nr = resultDataCheck.Nr;
+                UInt16 Vc0 = resultDataCheck.Vc0;
+                UInt16 Vc = resultDataCheck.Vc;
+                UInt16 Vc1 = resultDataCheck.Vc1;
+                UInt64 rpos = resultDataCheck.rpos;
 
 
                 AxC.arraysIniGeneric(Vc0, Vc, Vc1);
 
-                string resultArraysData = AxC.arraysIniData(Ns, Nr, Vc0, Vc, Vc1);
-                if (resultArraysData == "ok")
+                string resultArraysData = AxC.arraysIniData();
+                if (resultArraysData != "ok")
                 {
-
-                }
-                else
-                {
+ 
                     result_info.Text = "cannot create data arrays. Total number of blocks: " + Ns.ToString() + " Total number of records: " + Nr.ToString();
                     return;
                 }
 
 
                 fileIn = new System.IO.StreamReader(inputFileNow);
-                resultData = AxC.SetsGetDelimetedPart2(fileIn, '/', Ns, Nr, Vc0, Vc, Vc1, rpos);
+                dataReadResults resulDataReading = AxC.SetsGetDelimetedReadAllData(fileIn,  rpos);
 
-                Ns = resultData[0];
-                Nr = resultData[1];
-                AxC.Ns = Ns;
-                AxC.Nr = Nr;
+                Ns = resulDataReading.Ns;
+                Nr = resulDataReading.Nr;
 
 
                 if (Ns > 0)
@@ -603,17 +562,7 @@ namespace axon_console
                         }
                         fileCopy.Close();
                     }
-                    //if (multi)
-                    //{
-                    //    if (i == 0)
-                    //    {
-                    //        AxC.SetsWriteDelimeted(fileCombine, delimeter, false);
-                    //    }
-                    //    else
-                    //    {
-                    //        AxC.SetsWriteDelimeted(fileCombine, delimeter, true);
-                    //    }
-                    //}
+                   
 
                     fileInfo.Write(AxC.OutputFileInfo(inputFileNow));
                     fileInfo.Close();
@@ -641,7 +590,7 @@ namespace axon_console
 
 
 
-                    string dChar = AxC.Delimeter;
+                    char dChar = AxC.Delimeter;
 
 
                     Graphics g = graph_linkage.CreateGraphics();
