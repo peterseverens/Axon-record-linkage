@@ -1415,36 +1415,48 @@ namespace axon_console
 
             char dChar = Delimeter;
             UInt16 pos = 0; UInt16 rpos = 0;
-
-
-            t = ""; rpos = 0;
-            do
+            string[] words = new string[1];
+            try
             {
-                t = file.ReadLine(); pos += 1;
-                //t = data[rpos]; rpos += 1;
-            } while (t.Trim() == "");
+                t = ""; rpos = 0;
+                do
+                {
+                    t = file.ReadLine(); pos += 1;
+                    //t = data[rpos]; rpos += 1;
+                } while (t.Trim() == "");
 
-            string[] words = t.Split(dChar);
-            //Ns = Convert.ToUInt64(words[0]);
-            Vc0 = Convert.ToUInt16(words[0]);
-            Vc = Convert.ToUInt16(words[1]);
-            Vc1 = Convert.ToUInt16(words[2]);
+                words = t.Split(dChar);
+                //Ns = Convert.ToUInt64(words[0]);
+                Vc0 = Convert.ToUInt16(words[0]);
+                Vc = Convert.ToUInt16(words[1]);
+                Vc1 = Convert.ToUInt16(words[2]);
 
-            Var0Labels = new string[Vc0];
-            VarLabels = new string[Vc];
-            Var1Labels = new string[Vc1];
+                Var0Labels = new string[Vc0];
+                VarLabels = new string[Vc];
+                Var1Labels = new string[Vc1];
 
+
+            }
+            catch (Exception e) {
+
+                result.result = "expected 3 numbers describing the number of indepentdent, dependent and singular vairiables with delimeter: " + dChar.ToString();  
+                result.result += "  (" + e.Message + ")";
+                result.error = true;
+                return result;
+            }
+         
 
 
             UInt16 i = 0; UInt64 r = 0; t = "";
 
-
-            do
+            try
+            {
+                do
             {
                 do { t = file.ReadLine(); pos += 1; } while (t.Trim() == "");
 
 
-                words = t.Split(dChar);
+                 words = t.Split(dChar);
                 Var0Labels[i] = words[0];
                 i += 1;
                 if (t.Length > 1) { missingS0[i] = words[1].Trim(); }
@@ -1455,7 +1467,7 @@ namespace axon_console
                 do { t = file.ReadLine(); pos += 1; } while (t.Trim() == "");
 
 
-                words = t.Split(dChar);
+                 words = t.Split(dChar);
                 VarLabels[i] = words[0];
                 if (t.Length > 1) { missingS[i] = words[1].Trim(); }
                 i += 1;
@@ -1469,7 +1481,7 @@ namespace axon_console
                     do { t = file.ReadLine(); pos += 1; } while (t.Trim() == "");
 
 
-                    words = t.Split(dChar);
+                      words = t.Split(dChar);
                     Var1Labels[i] = words[0];
                     if (t.Length > 1) { missingS1[i] = words[1].Trim(); }
                     i += 1;
@@ -1477,10 +1489,18 @@ namespace axon_console
             }
             rpos = pos;
 
-            ///////////////// vanaf hier hetzelfde als deze proc niet old..
 
+            }
+            catch (Exception e)
+            {
 
-            // check first number of categories and Ns and Nr
+                result.result = "expected " + Vc0.ToString() +" labels for independent fields, " + Vc.ToString() + " labels for dependent fields and " + Vc1.ToString() + " labels for singular fields with delimeter: "  + dChar.ToString();
+                result.result += "  (" + e.Message + ")";
+                result.error = true;
+                return result;
+            }
+ 
+
 
 
             Int16[,] SRdata = new Int16[maxRperRecordS, maxVnow];
@@ -1489,11 +1509,14 @@ namespace axon_console
 
             string[] respnrI = new string[maxRperRecordS];
 
-
-
             UInt64 s = 0; byte rnNow = 0;
             string RecordNr = "";
             i = 0;
+
+            try
+            {
+
+               
             do
             {
 
@@ -1528,10 +1551,18 @@ namespace axon_console
 
 
             } while (t != null);
+            }
+            catch (Exception e)
+            {
 
+                result.result = "datafile with delimeter: " + dChar.ToString() + " in wrong format given the number of fields defined in the header. Did you define the fields in the right way?";
+                result.result += "  (" + e.Message + ")";
+                result.error = true;
+                return result;
+            }
 
             Ns = s; Nr = r;
-             
+
 
             result.Ns = Ns;
             result.Nr = Nr;
@@ -1543,7 +1574,7 @@ namespace axon_console
 
             file.Close();
             return result;
-        }
+            }
 
         public dataReadResults SetsGetDelimetedReadAllData(System.IO.StreamReader file,    UInt64 rpos)
 

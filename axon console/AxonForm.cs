@@ -93,10 +93,16 @@ namespace axon_console
             byte iterateN = Convert.ToByte(textBox_iterations.Text);
             linkmethodNow = -1; if (radioButton_bayesian.Checked) { linkmethodNow = 0; } else { linkmethodNow = 1; }
 
-            axonGoSync(textBox_inputdir.Text, textBox_filename.Text, textBox_outputdir.Text, "d:/axon/cache", "/", checkBox_multiple.Checked, iterateN);
+           finalResults result= axonGoSync(textBox_inputdir.Text, textBox_filename.Text, textBox_outputdir.Text, "d:/axon/cache", "/", checkBox_multiple.Checked, iterateN);
 
-            endDateTime = DateTime.Now;
-            label_result.Text = "Your output is ready! duration: " + (endDateTime - startDateTime).ToString();
+            if (result.error) {
+                label_result.Text = result.result;
+            }
+            else
+            {
+                endDateTime = DateTime.Now;
+                label_result.Text = "Your output is ready! duration: " + (endDateTime - startDateTime).ToString();
+            }
 
         }
 
@@ -430,11 +436,11 @@ namespace axon_console
 
         }
 
-        public void axonGoSync(string inputDir, string inputFile, string outputDir, string cachDir, string delimeter, Boolean multi, byte iterateN)
+        public finalResults axonGoSync(string inputDir, string inputFile, string outputDir, string cachDir, string delimeter, Boolean multi, byte iterateN)
         {
 
-           
 
+            finalResults procResult = new finalResults();
 
             Boolean GraphicShow = false;
 
@@ -520,6 +526,12 @@ namespace axon_console
   
                 dataCheckResults resultDataCheck = AxC.SetsGetDelimetedCountAndCheck(fileIn);
 
+                if (resultDataCheck.error) { 
+                    result_info.Text = resultDataCheck.result;
+                    procResult.result = resultDataCheck.result;
+                    procResult.error = true;
+                    return procResult; 
+                }
 
                 UInt64 Ns = resultDataCheck.Ns;
                 UInt64 Nr = resultDataCheck.Nr;
@@ -534,9 +546,11 @@ namespace axon_console
                 string resultArraysData = AxC.arraysIniData();
                 if (resultArraysData != "ok")
                 {
- 
-                    result_info.Text = "cannot create data arrays. Total number of blocks: " + Ns.ToString() + " Total number of records: " + Nr.ToString();
-                    return;
+
+                    //result_info.Text = "cannot create data arrays. Total number of blocks: " + Ns.ToString() + " Total number of records: " + Nr.ToString();
+                    procResult.error = true;
+                    procResult.result = "insufficient memory: cannot create data arrays. Total number of blocks: " + Ns.ToString() + " Total number of records: " + Nr.ToString();
+                    return procResult;
                 }
 
 
@@ -584,8 +598,10 @@ namespace axon_console
                     else
                     {
 
-                        result_info.Text = "cannot create probability arrays. Total number of categories to cross : " + result[0].ToString();
-                        return;
+                        //result_info.Text = "cannot create probability arrays. Total number of categories to cross : " + result[0].ToString();
+                        return procResult;
+                        procResult.result = "insufficient memory: cannot create probability arrays. Total number of categories to cross : " + result[0].ToString();
+                        return procResult;
                     }
 
 
@@ -690,11 +706,8 @@ namespace axon_console
                 }
                 GraphLikelihoods(filesGra, multi, linkmethodNow);
             }
-
-
-
-            //fileCombine.Close();
-
+          
+            return procResult;
 
         }
 

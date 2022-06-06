@@ -14,17 +14,24 @@ namespace axon_console
         public UInt16 Vc { get; set; }
         public UInt16 Vc1 { get; set; }
         public UInt64 rpos { get; set; }
-        public string result { get; set; }    
+        public string result { get; set; }
+        public bool error { get; set; }
     }
-}
+ 
 
-namespace axon_console
-{
+ 
     public class dataReadResults
     {
         public UInt64 Ns { get; set; }
         public UInt64 Nr { get; set; }
         
         public string result { get; set; }
+    }
+
+    public class finalResults
+    {
+ 
+        public string result { get; set; }
+        public bool error { get; set; }
     }
 }
