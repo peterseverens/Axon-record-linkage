@@ -1,5 +1,11 @@
 # Axon record linkage
 
+Scope
+
+- matching tracking cookings
+- database criminal investigation
+- preparing research data from differen sources
+
 How it works
 
 Axon is developed to link datasets that cannot be linked on hard or even soft criteria. Axon links datasets by evaluating and then applying Bayesian relations between fields in both sets.
