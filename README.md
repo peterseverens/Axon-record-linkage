@@ -1,7 +1,5 @@
 # Axon record linkage
 
-# Axon record linkage
-
 Scope
 
 - matching tracking cookies
