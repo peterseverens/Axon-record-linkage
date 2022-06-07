@@ -2304,11 +2304,7 @@ namespace axon_console
             sb.AppendLine("ok");
             return sb;
         }
-
-
-
-
-
+         
 
 
         public void inform(string message) { }
@@ -2545,7 +2541,8 @@ namespace axon_console
 
                         if (writeLinkage)
                         {
-                            fileScores.WriteLine(Addscore(IterNumber, s, r, PrNow + r, score[PrNow + r], ThresHoldCriterium));  //);
+                            fileScores.WriteLine(Addscore(IterNumber, s, r, PrNow + r, score[PrNow + r], ThresHoldCriterium)); 
+
                         }
                     }
                     PrNow += Nrr[s];
@@ -2992,8 +2989,8 @@ namespace axon_console
             t = ""; //file.WriteLine(t);
 
 
-            t += iterN.ToString("0", CultureInfo.InvariantCulture);
-            t += Delimeter;
+            //t += iterN.ToString("0", CultureInfo.InvariantCulture);
+            // += Delimeter;
             t += s.ToString("0", CultureInfo.InvariantCulture);
             t += Delimeter;
             t += r.ToString("0", CultureInfo.InvariantCulture);
@@ -3004,8 +3001,8 @@ namespace axon_console
             t += RespNr[rt];
             t += Delimeter;
             t += score.ToString("0.00", CultureInfo.InvariantCulture);
-            t += Delimeter;
-            t += ThresHoldCriterium.ToString("0.00", CultureInfo.InvariantCulture);
+            //t += Delimeter;
+            //t += ThresHoldCriterium.ToString("0.00", CultureInfo.InvariantCulture);
             //t += Delimeter;
             //t = t + Hscore[Pr[s] + r].ToString("0.00", CultureInfo.InvariantCulture);
 
