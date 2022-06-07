@@ -1,15 +1,17 @@
 # Axon record linkage
 
+# Axon record linkage
+
 Scope
 
-- matching tracking cookings
+- matching tracking cookies
 - database criminal investigation
-- preparing research data from differen sources
+- preparing research data from different sources
 
 How it works
 
 Axon is developed to link datasets that cannot be linked on hard or even soft criteria. Axon links datasets by evaluating and then applying Bayesian relations between fields in both sets.
-Axon uses a two step approach.
+Axon uses a twostep approach.
 Step 1	The records are linked on hard criteria like city and month of birth. Each record form dataset 1 has then several candidate records in dataset 2.
 Step 2	Axon derives Bayesian relations between the content in other fields like telephone numbers called, disease code in set 1 and care code in set 2 or income in set 1 and type of neighborhood in set 2. Bayesian relations are calculated between all fields in both sets.
 Step 3	Axon uses the derived knowledge to match the datasets again. The matching now becomes better. The number of candidate found are now less than in step 1. Then Axon derives new estimations based on the new match and matches again. Now the match is even better and the number of candidates shrinks even more. Axon can proceed with this until there are no gains found. Mostly three to four loops are sufficient.   
@@ -22,12 +24,12 @@ Axon uses a Bayesian or a Chi Square estimation. Therefore the estimation is bas
 
 Prepare data set
 
-Axon expects a dataset with simple headers to point to the nummber of independent, dependent and singular variables
-In the example below there are 5 independent, 6 dependent and one singular variables (5/6/1) with their names, starting with the name 'InDep0'. The name should befollowed with only the delimer (asumming the missing value is an empty field) or a catagory (like 'InDep3' and 'InDep4').
-The data set is arranged in groups. The first record is always the first record of the independent dataset. The records after that are the candidates (after a raw matching with the independen dataset). Both the independent and the dependent records start with the block number followed by the identifying key of the record. Then the field values follow.
+Axon expects a dataset with simple headers to point to the number of independent, dependent and singular variables
+In the example below there are 5 independent, 6 dependent and one singular variables (5/6/1) with their names, starting with the name 'InDep0'. The name should be followed with only the delimiter (assuming the missing value is an empty field) or a category (like 'InDep3' and 'InDep4').
+The data set is arranged in groups. The first record is always the first record of the independent dataset. The records after that are the candidates (after a raw matching with the independent dataset). Both the independent and the dependent records start with the block number followed by the identifying key of the record. Then the field values follow.
 Only the dependent records have singular fields values (after the dependent field values)
 
-Choose the Test tab to build a testset. You can choose the number of field (variables) and the number of records. It is recommended to do is to test wether the dataset you are planning to input can be handled by the RAM of your server or desktop.
+Choose the Test tab to build a test set. You can choose the number of field (variables) and the number of records. It is recommended to do is to test whether the dataset you are planning to input can be handled by the RAM of your server or desktop.
 
 
 example.prt
@@ -63,11 +65,11 @@ output files
 
 There are three important outputfile.
 
-The first one is the .rpt file. It gives a description of all the iterations and the intermediate results in the linkage proces.
+The first one is the .rpt file. It gives a description of all the iterations and the intermediate results in the linkage process.
 The second is the .frq file. It gives the frequencies of all the input fields. Check it to be sure your input is as expected.
-The third is the .lin file. This file outputs within each prematched block the linkage probabilities of each dependent record with the dependent one. 
+The third is the .lin file. This file outputs within each pre matched block the linkage probabilities of each dependent record with the dependent one. 
 
-The first field of the .lin file is the block number followed by the serial number of the dependent record. Then the Id of the independent record is given followed by the Id of the candidate dependent record. After that is the probability that the dependen records is a candidate link for the indepent one. As you can see in the example is record 1 of block 1 the best candidate of the three dependent records in the block. Record 3 has vert low probabability of being a candidate.
+The first field of the .lin file is the block number followed by the serial number of the dependent record. Then the Id of the independent record is given followed by the Id of the candidate dependent record. After that is the probability that the dependent records is a candidate link for the independent one. As you can see in the example is record 1 of block 1 the best candidate of the three dependent records in the block. Record 3 has a very low probability of being a candidate.
 
 example.lin
 ______________________________________________________
