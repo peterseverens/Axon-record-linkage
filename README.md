@@ -59,11 +59,30 @@ Sing0/
 2/3073208371991312384/C7/C13/C2/C6/C9/C12/C0/
 _____________________________________________________
 
+output files
+
 There are three important outputfile.
 
 The first one is the .rpt file. It gives a description of all the iterations and the intermediate results in the linkage proces.
-The second is the .frq file. It gives the frequencies of all the input fields. Chack it to be sure your input is as expected.
+The second is the .frq file. It gives the frequencies of all the input fields. Check it to be sure your input is as expected.
 The third is the .lin file. This file outputs within each prematched block the linkage probabilities of each dependent record with the dependent one. 
+
+The first field of the .lin file is the block number followed by the serial number of the dependent record. Then the Id of the independent record is given followed by the Id of the candidate dependent record. After that is the probability that the dependen records is a candidate link for the indepent one. As you can see in the example is record 1 of block 1 the best candidate of the three dependent records in the block. Record 3 has vert low probabability of being a candidate.
+
+example.lin
+______________________________________________________
+1/1/-5175954396074827776/-5175954396074827776/30.41
+1/2/-5175954396074827776/-5175954396074827776/15.32
+1/3/-5175954396074827776/-5175954396074827776/-0.06
+2/1/3073208371991312384/3073208371991312384/30.35
+2/2/3073208371991312384/3073208371991312384/-0.08
+3/1/-7271074886109370368/-7271074886109370368/30.27
+3/2/-7271074886109370368/-7271074886109370368/7.39
+3/3/-7271074886109370368/-7271074886109370368/-0.09
+3/4/-7271074886109370368/-7271074886109370368/-0.07
+3/5/-7271074886109370368/-7271074886109370368/7.88
+______________________________________________________
+
 Literature
 
 There is a lot of academic literature on this topic. However the concept record linkage can apply to other linkage methods like linking on Soundex’s and distances.
