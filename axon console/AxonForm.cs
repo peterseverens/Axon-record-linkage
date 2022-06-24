@@ -186,15 +186,15 @@ namespace axon_console
                     AxC.CategoryFrequenciesShow = 1;
 
 
-                    
-
-                    AxC.Linkmethod = linkmethodNow;  
+                    AxC.Linkmethod = linkmethodNow;
                     AxC.ThresHoldCriterium = ThresHoldCriteriumNow;
                     AxC.AutoSelection = 0; //all fields are used to calculate likelihood.
                     AxC.CriteriumHandling = 3; //get all reocords above threshold
-                    AxC.MissingsInclude = 1;  //missing categories are also used to calculate Likelihood
-                    AxC.ThresHoldPercentageCriterium = 0;
-                    AxC.DifferenceCriterium = -99;
+
+                    //!!!!!!!!!!!
+                    //AxC.ThresHoldPercentageCriterium = 0;
+                    //AxC.MissingsInclude = 1;  //missing categories are also used to calculate Likelihood
+                    //AxC.DifferenceCriterium = -99;
 
                     AxC.chi2WithinShow = 0;
                     AxC.Chi2BetweenShow = 1;
@@ -202,7 +202,7 @@ namespace axon_console
                     AxC.DistributionLikelihoodsShow = 1;
                     AxC.LinkedSetsShow = 0;
                     AxC.DistributionLinkedRecordsNShow = 1;
-                    if (GraphicShowNow) AxC.GraphicShow = 1; else AxC.GraphicShow = 0;
+                    AxC.GraphicShow = 1;
 
 
                     string inputFileNow = inputDir + "\\" + files[iNow] + ".prt"; ;
@@ -492,9 +492,11 @@ namespace axon_console
                 AxC.ThresHoldCriterium = ThresHoldCriteriumNow;
                 AxC.AutoSelection = 0; //all fields are used to calculate likelihood.
                 AxC.CriteriumHandling = 3; //get all reocords above threshold
-                AxC.MissingsInclude = 1;  //missing categories are also used to calculate Likelihood
-                AxC.ThresHoldPercentageCriterium = 0;
-                AxC.DifferenceCriterium = -99;
+                
+                //!!!!!!!!!!!
+                //AxC.ThresHoldPercentageCriterium = 0;
+                //AxC.MissingsInclude = 1;  //missing categories are also used to calculate Likelihood
+                //AxC.DifferenceCriterium = -99;
 
                 AxC.chi2WithinShow = 0;
                 AxC.Chi2BetweenShow = 1;

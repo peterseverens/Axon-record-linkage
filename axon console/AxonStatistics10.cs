@@ -1,3 +1,4 @@
+using MathNet.Numerics.LinearAlgebra;
 using System;
 
 using System.Data.SqlClient;
@@ -128,8 +129,8 @@ namespace axon_console
 
 
 
-        Int32[] sPP = new Int32[1];  //15000 * 6+1 * 4+1 
-        Int32[] sPPn = new Int32[1];
+        UInt64[] sPP = new UInt64[1];  //15000 * 6+1 * 4+1 
+        UInt64[] sPPn = new UInt64[1];
         public float[] sPPratio = new float[1]; //4,4,vc0 vc
         public float[] sPPChi = new float[1]; //4,4,vc0 vc
 
@@ -282,8 +283,8 @@ namespace axon_console
 
             try
             {
-                sPP = new Int32[catN];
-                sPPn = new Int32[catN];
+                sPP = new UInt64[catN];
+                sPPn = new UInt64[catN];
                 sPPratio = new float[catN]; //4,4,vc0 vc
                 sPPChi = new float[catN];
 
@@ -703,7 +704,7 @@ namespace axon_console
                 byte rnNow = Convert.ToByte(rnd.Next(2, 7));
                 //Pr[s] = Pr[s - 1];
 
-                UInt16[,] SRdata = new UInt16[Vin + Vin + 1, Cin + 1];
+                UInt16[,] SRdata = new UInt16[8, Cin + 1];
                 string[] respnrI = new string[maxRperRecordS];
                 long LongNr = (long)((rnd.NextDouble() * 2.0 - 1.0) * long.MaxValue);
                 respNr0Old = LongNr.ToString().Trim();
@@ -895,13 +896,13 @@ namespace axon_console
             Array.Clear(Ratiox, 0, Ratiox.Length);
             Array.Clear(CHIp, 0, CHIx.Length);
 
-            Int32[,] ePP = new Int32[NcVc1H + 1, Vc1 + 1];
-            Int32[,] ePPn = new Int32[NcVc1H + 1, Vc1 + 1];
+            UInt32[,] ePP = new UInt32[NcVc1H + 1, Vc1 + 1];
+            UInt32[,] ePPn = new UInt32[NcVc1H + 1, Vc1 + 1];
 
             Array.Clear(ePPratio, 0, ePPratio.Length);
 
-            Int64 N = 0;
-            Int64 Nn = 0;
+            UInt64 N = 0;
+            UInt64 Nn = 0;
 
 
             float observed = 0; float notobserved = 0;
@@ -1040,8 +1041,8 @@ namespace axon_console
                     {
                         //COMPUTE
                         N = 0; Nn = 0;
-                        Int64[] nr = new Int64[NcVc0[v0] + 1];
-                        Int64[] nc = new Int64[NcVc[v] + 1];
+                        UInt64[] nr = new UInt64[NcVc0[v0] + 1];
+                        UInt64[] nc = new UInt64[NcVc[v] + 1];
                         //double[] Nnr = new double[NcVc0[v0] + 1];
                         //double[] Nnc = new double[NcVc[v] + 1];
 
@@ -1074,9 +1075,6 @@ namespace axon_console
                             for (UInt16 c = 0; c < NcVc[v]; c++)
                             {
                                 Single ppc = 0; ; Single ppr = 1;
-
-
-
 
                                 UInt64 i = posLi[v0, v] + (ulong)c0 * NcVc[v] + c;
                                 observed = sPP[i];
@@ -1311,7 +1309,9 @@ namespace axon_console
                 t += "\r\n";
                 sb.Append(t); t = "";
 
-
+                bool correctInterDep=false;
+                if (correctInterDep) correctInterDependencies();
+                
                 for (UInt16 v = 0; v < Vc; v++)
                 {
                     for (UInt16 c = 0; c < NcVc[v]; c++)
@@ -1362,16 +1362,19 @@ namespace axon_console
 
             }
 
+           
+
             if (Chi2BetweenShow == 1)
             {
                 inform("");
-                t = "";
+                t  = "\r\n"; sb.Append(t);  t = "";
                 if (Linkmethod == 0) { t += "Ratio''s between Dependent and Independ Identifiers"; };
                 if (Linkmethod == 1) { t += "Chi Squares between Dependent and Independ Identifiers"; };
-                t += ",";
-                t += "Dependent";
-                t += "\r\n";
-                sb.Append(t); t = ",";
+                t += "\r\n"; sb.Append(t);
+                t = "\r\n"; sb.Append(t);
+                
+                t = "Dependent:,";
+ 
                 for (UInt16 v = 0; v < Vc; v++)
                 {
                     t += "dep " + v.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v] + ")";
@@ -1381,14 +1384,16 @@ namespace axon_console
                 sb.Append(t); t = "";
                 for (UInt16 v0 = 0; v0 < Vc0; v0++)
                 {
-                    t += "dep " + v0.ToString("0", CultureInfo.InvariantCulture) + ": (" + Var0Labels[v0] + ")";
+                    t += "indep " + v0.ToString("0", CultureInfo.InvariantCulture) + ": (" + Var0Labels[v0] + ")";
                     for (UInt16 v = 0; v < Vc; v++)
                     {
                         t += ",";
-                        if (Linkmethod == 0) { t += Ratiox[v0, v].ToString("0.00", CultureInfo.InvariantCulture); }
+                        if (Linkmethod == 0) {
+                            t += Ratiox[v0, v].ToString("0.000", CultureInfo.InvariantCulture); 
+                        }
                         if (Linkmethod == 1)
-                        {
-                            t += CHIx[v0, v].ToString("0.00", CultureInfo.InvariantCulture);
+                        { 
+                            t += (CHIx[v0, v]/Nr).ToString("0.000", CultureInfo.InvariantCulture);
                             if (CHIp[v0, v] < 0.05 && CHIp[v0, v] != 0)
                             {
                                 if (CHIp[v0, v] < 0.001) { t += "**"; } else { t += "*"; }
@@ -1399,15 +1404,323 @@ namespace axon_console
                     sb.Append(t); t = "";
                 }
                 t += "\r\n"; sb.Append(t); t = "";
+
+                if (Linkmethod == 0)
+                {
+                    if (Linkmethod == 0) { t = "\r\n"; ; t += "Likelihood Ratio's Within"; }
+                    t += "\r\n";
+
+                    for (UInt16 v1 = 0; (v1 < Vc1); v1++)
+                    {
+                        t += "variable ; " + Var1Labels[v1]; t += ",";
+                        for (UInt16 c1 = 0; (c1 < NcVc1[v1]); c1++)
+                        {
+                            t += "c" + c1.ToString() + "(" + code1[v1, c1] + ")"; t += ",";
+                        }
+                        t += "\r\n";
+                        for (UInt16 c = 0; (c < NcVc1[v1]); c++)
+                        {
+                            t += ePPratio[c, v1].ToString("0.00", CultureInfo.InvariantCulture); t += ",";
+                        }
+                        t += "\r\n";
+                    }
+                }
+                t += "\r\n"; sb.Append(t); t = "";
             }
             // ReDim PP(0, 0, 0, 0)
 
-
+            bool correct =true;
+            if (correct)
+            {
+                sb = correctEndMatrix(sb);
+            }
             return sb;
 
         }
 
+        StringBuilder correctEndMatrix(StringBuilder sb)
+        {
 
+
+            //TEST CORRECTION FOR  INTERCORRELATIONS
+
+
+            Matrix<double> M = Matrix<double>.Build.Dense((int)Vc0, Vc);
+            for (UInt16 v0 = 0; v0 < Vc0; v0++)
+            {
+                for (UInt16 v = 0; v < Vc; v++)
+                {
+                    if (Linkmethod == 0) { M[v0, v] = Ratiox[v0, v]; }
+                    if (Linkmethod == 1) { M[v0, v] = CHIx[v0, v] / Nr; }
+                }
+            }
+
+            var MM = M * M.Transpose();
+            var MMi = MM.Inverse();
+
+            //test
+
+            var xx = (M * M.Transpose());
+            var xxi = (M * M.Transpose()).Inverse();
+            var xxc0 = xx * xxi;
+            var xxc1 = xxi* xx;
+
+            ////var reg = xxi * x0.Transpose() * y0;
+            var o = M.Transpose() * xxi;
+            var oo =   xxi * M;
+            var ooo = M.Transpose() * xxi.Transpose();
+            var oooo = xxi.Transpose() * M;
+
+            //end test
+
+            var sum0 = M.RowSums();
+            var mean0 = sum0 / (int)Vc0;
+            Matrix<double> col0 = Matrix<double>.Build.Dense((int)Vc, 1, 1);
+            Matrix<double> meanVector0 = Matrix<double>.Build.DenseOfColumnVectors(mean0);
+            var meanMatrix0 = meanVector0 * col0.Transpose();
+            var Mm = M - meanMatrix0;        //subsctraction of mean
+            var Mmun = Mm.NormalizeRows(2); //un after subsctraction of mean
+              //un without subsctraction of mean
+            var MMmun = Mmun * Mmun.Transpose();
+            var MMmuni = MMmun.Inverse();
+
+            //var Mcorrected = MMmuni *  M ;
+            //var Mcorrected = (M.Transpose() * MMuni).Transpose();
+            //var Mcorrected = MMmuni.Transpose() * M;
+
+            var Mun = M.NormalizeRows(2);
+            var MMuni = (Mun * Mun.Transpose()).Inverse();
+            //var Mcorrected = MMuni.Transpose() * M;
+            var Mcorrected = MMuni * M;
+
+            sb.Append(t); t = ",";
+            t = "M (CHIx[v0, v] / Nr)";
+            t += "\r\n"; sb.Append(t);
+            t = "\r\n"; sb.Append(t);
+            t = "Dependent:,";
+            for (UInt16 v = 0; v < Vc; v++)
+            {
+                t += "dep " + v.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v] + ")";
+                t += ",";
+            }
+            t += "\r\n"; sb.Append(t); t = "";
+            for (UInt16 v0 = 0; v0 < Vc0; v0++)
+            {
+                t += "indep " + v0.ToString("0", CultureInfo.InvariantCulture) + ": (" + Var0Labels[v0] + ")";
+                for (UInt16 v = 0; v < Vc; v++)
+                {
+                    t += ",";
+                    t += M[v0, v].ToString("0.000", CultureInfo.InvariantCulture);
+                }
+                t += "\r\n";
+                sb.Append(t); t = "";
+            }
+
+
+            t += "\r\n"; sb.Append(t); t = "";
+            t = "M - mean Unit normalized";
+            t += "\r\n"; sb.Append(t);
+            t = "\r\n"; sb.Append(t);
+            t = "Dependent:,";
+            for (UInt16 v = 0; v < Vc; v++)
+            {
+                t += "dep " + v.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v] + ")";
+                t += ",";
+            }
+            t += "\r\n"; sb.Append(t); t = "";
+            for (UInt16 v0 = 0; v0 < Vc0; v0++)
+            {
+                t += "indep " + v0.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v0] + ")";
+                for (UInt16 v = 0; v < Vc; v++)
+                {
+                    t += ",";
+                    t += Mun[v0, v].ToString("0.000", CultureInfo.InvariantCulture);
+                }
+                t += "\r\n";
+                sb.Append(t); t = "";
+            }
+            t += "\r\n"; sb.Append(t); t = "";
+            t = "M * M transposed";
+            t += "\r\n"; sb.Append(t);
+            t = "\r\n"; sb.Append(t);
+            t = "Dependent:,";
+            for (UInt16 v = 0; v < Vc; v++)
+            {
+                t += "dep " + v.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v] + ")";
+                t += ",";
+            }
+            t += "\r\n"; sb.Append(t); t = "";
+            for (UInt16 v0 = 0; v0 < Vc0; v0++)
+            {
+                t += "indep " + v0.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v0] + ")";
+                for (UInt16 v = 0; v < Vc0; v++)
+                {
+                    t += ",";
+                    t += MMmun[v0, v].ToString("0.000", CultureInfo.InvariantCulture);
+                }
+                t += "\r\n";
+                sb.Append(t); t = "";
+            }
+            t += "\r\n"; sb.Append(t); t = "";
+            t = "Inverse of M * M transposed";
+            t += "\r\n"; sb.Append(t);
+            t = "\r\n"; sb.Append(t);
+            t = ",";
+            for (UInt16 v = 0; v < Vc; v++)
+            {
+                t += "dep " + v.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v] + ")";
+                t += ",";
+            }
+            t += "\r\n"; sb.Append(t); t = "";
+            for (UInt16 v0 = 0; v0 < Vc0; v0++)
+            {
+                t += "indep " + v0.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v0] + ")";
+                for (UInt16 v = 0; v < Vc0; v++)
+                {
+                    t += ",";
+                    t += MMuni[v0, v].ToString("0.000", CultureInfo.InvariantCulture);
+                }
+                t += "\r\n";
+                sb.Append(t); t = "";
+            }
+            t += "\r\n"; sb.Append(t); t = "";
+            t = "M corrected";
+            t += "\r\n"; sb.Append(t);
+            t = "\r\n"; sb.Append(t);
+            t = ",";
+            for (UInt16 v = 0; v < Vc; v++)
+            {
+                t += "dep " + v.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v] + ")";
+                t += ",";
+            }
+            t += "\r\n"; sb.Append(t); t = "";
+            for (UInt16 v0 = 0; v0 < Vc0; v0++)
+            {
+                t += "indep " + v0.ToString("0", CultureInfo.InvariantCulture) + ": (" + VarLabels[v0] + ")";
+                for (UInt16 v = 0; v < Vc; v++)
+                {
+                    t += ",";
+                    t += Mcorrected[v0, v].ToString("0.000", CultureInfo.InvariantCulture);
+                }
+                t += "\r\n";
+                sb.Append(t); t = "";
+
+
+            }
+            //END TEST CORRECTION FOR  INTERCORRELATIONS
+            t += "\r\n"; sb.Append(t); t = "";
+            t += "\r\n"; sb.Append(t); t = "";
+
+            return sb;
+        }
+
+
+        public void correctInterDependencies() {
+
+
+            //Completely Wrong!!
+
+            for (UInt16 v = 0; v < Vc; v++)
+            {
+                for (UInt16 v0 = 0; v0 < Vc0; v0++)
+                {
+                    float[,] ToCorrect = new float[Vc0, Vc];
+                     
+                    for (UInt16 c = 0; c < NcVc[v]; c++)
+                    {
+                        for (UInt16 c0 = 0; c0 < NcVc0[v0]; c0++)
+                        {
+
+                            UInt64 i = posLi[v0, v] + (ulong)c0 * NcVc[v] + c;
+                            // ToCorrect = sPPratio[i] ;  
+                            ToCorrect[v0,v] = sPPChi[i] ;
+                            
+                        }
+                    }
+                    float[,] ToCorrectOut = correctWithinMatrix(ToCorrect);
+                    for (UInt16 c = 0; c < NcVc[v]; c++)
+                    {
+                        for (UInt16 c0 = 0; c0 < NcVc0[v0]; c0++)
+                        {
+
+                            UInt64 i = posLi[v0, v] + (ulong)c0 * NcVc[v] + c;
+                            // ToCorect = sPPratio[i] ;  
+                            sPPChi[i] = ToCorrectOut[v0, v];
+                            
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        float[,] correctWithinMatrix(float[,] ToCorrectIn)
+        {
+
+
+            //TEST CORRECTION FOR  INTERCORRELATIONS
+
+            float[,] ToCorrectOut = new float[Vc0, Vc];
+
+            Matrix<double> M = Matrix<double>.Build.Dense((int)Vc0, Vc);
+            for (UInt16 v0 = 0; v0 < Vc0; v0++)
+            {
+                for (UInt16 v = 0; v < Vc; v++)
+                {
+                    M[v0, v] = ToCorrectIn[v0, v];
+                }
+            }
+
+            var MM = M * M.Transpose();
+            var MMi = MM.Inverse();
+
+            //test
+
+            //var xx = (M * M.Transpose());
+            //var xxi = (M * M.Transpose()).Inverse();
+            //var xxc0 = xx * xxi;
+            //var xxc1 = xxi * xx;
+
+            ////var reg = xxi * x0.Transpose() * y0;
+            //var o = M.Transpose() * xxi;
+            //var oo = xxi * M;
+            //var ooo = M.Transpose() * xxi.Transpose();
+            //var oooo = xxi.Transpose() * M;
+
+            //end test
+
+            //var sum0 = M.RowSums();
+            //var mean0 = sum0 / (int)Vc0;
+            Matrix<double> col0 = Matrix<double>.Build.Dense((int)Vc, 1, 1);
+            //Matrix<double> meanVector0 = Matrix<double>.Build.DenseOfColumnVectors(mean0);
+            //var meanMatrix0 = meanVector0 * col0.Transpose();
+            //var Mm = M - meanMatrix0;        //subsctraction of mean
+            //var Mmun = Mm.NormalizeRows(2); //un after subsctraction of mean
+                                            //un without subsctraction of mean
+            //var MMmun = Mmun * Mmun.Transpose();
+            //var MMmuni = MMmun.Inverse();
+
+            //var Mcorrected = MMmuni *  M ;
+            //var Mcorrected = (M.Transpose() * MMuni).Transpose();
+            //var Mcorrected = MMmuni.Transpose() * M;
+
+            var Mun = M.NormalizeRows(2);
+            var MMuni = (Mun * Mun.Transpose()).Inverse();
+            //var Mcorrected = MMuni.Transpose() * M;
+            var Mcorrected = MMuni * M;
+
+            for (UInt16 v0 = 0; v0 < Vc0; v0++)
+            {
+                for (UInt16 v = 0; v < Vc; v++)
+                {
+                    M[v0, v] = ToCorrectIn[v0, v];
+                    ToCorrectOut[v0, v] =  (float)Mcorrected[v0, v];
+                }
+            }
+
+            return ToCorrectOut;
+        }
         public dataCheckResults SetsGetDelimetedCountAndCheck(System.IO.StreamReader file)
         {
              
@@ -2501,6 +2814,43 @@ namespace axon_console
                         }
                     }
 
+                    ///????
+                    ///
+                    for (byte r = 1; r <= Nrr[s]; r++)
+                    {
+                        score[(PrNow + r)] = 1;
+                    }
+                    for (byte r = 1; (r <= Nrr[s]); r++)
+                    {
+                        for (UInt16 v0 = 0; (v0 < Vc0); v0++)
+                        {
+                            //if (((SetVar0[s, v0] != missing0[v0]) || (MissingsInclude == 0)))
+                            if (((SRdata[0, v0] != missing0[v0]) || (MissingsInclude == 0)))
+                            {
+                                for (UInt16 v = 0; (v < Vc); v++)
+                                    if (((SRdata[r, v] != missing[v]) || (MissingsInclude == 0)))
+                                    {
+                                        {
+                                            if ((SelectVar[v0, v] == 1))
+                                            {
+                                                //inform(("Computing Ratio\'s : Indepent " + v0.ToString("0", CultureInfo.InvariantCulture) + " with Dependent " + v.ToString("0.00", CultureInfo.InvariantCulture)));
+                                                
+
+                                                    UInt64 i = posLi[v0, v] + SRdata[0, v0] * (ulong)NcVc[v] + SRdata[r, v];
+                                                    score[(PrNow + r)] *= sPPratio[i];
+
+                                                
+
+                                            }
+                                        }
+                                    }
+                            }
+                        }
+
+                        //fileScores.WriteLine(Addscore(s, r, PrNow + r, score[PrNow + r]));  //);
+                    }
+
+                    ///????
 
                     if ((IterNumber > 0))
                     {
@@ -2588,12 +2938,8 @@ namespace axon_console
                                 {
                                     //inform("Computing Likelihoods : Indepent " + v0.ToString("0", CultureInfo.InvariantCulture) + " with Dependent " + v.ToString("0", CultureInfo.InvariantCulture));
 
-
-
                                     UInt64 i = posLi[v0, v] + SRdata[0, v0] * (ulong)NcVc[v] + SRdata[r, v];
                                     score[PrNow + r] += sPPChi[i];
-
-
 
                                 }
                             }
