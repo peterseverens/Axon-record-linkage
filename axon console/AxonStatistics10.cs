@@ -3010,7 +3010,7 @@ namespace axon_console
 
                     for (byte r = 1; r <= NrNow; r++)
                     {
-                        scoresN[Convert.ToInt32(-.5 + NcatGraph * (score[PrNow2 + r] - ll) / (hh - ll))] += 1;
+                        scoresN[Convert.ToInt64(-.5 + NcatGraph * (score[PrNow2 + r] - ll) / (hh - ll))] += 1;
                     }
                     PrNow2 += NrNow;
                 }
