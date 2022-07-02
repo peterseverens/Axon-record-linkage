@@ -3241,9 +3241,9 @@ namespace axon_console
 
             return t;
         }
- 
 
 
+        //BELOW IS CACHING TO DISK (NOT IMPLEMENTED IN THIS APPLICATION)
         public UInt64 KeyCachSaveValueK(FileStream cach, BinaryWriter writer, FileStream cachI, BinaryWriter writerI, UInt64 s, Byte nr, UInt64 posOld, string[] respnrI)
         {
             UInt64 posNew = posOld + 1; //1 for nr
@@ -3266,7 +3266,7 @@ namespace axon_console
         }
 
 
-        //BELOW IS CACHING TO DISK (NOT IMPLEMENTED IN THIS APPLICATION)
+        
         public string[] KeyCachGetValueK(FileStream cach, BinaryReader reader, FileStream cachI, BinaryReader readerI, UInt64 s)
         {
             string[] respnrI = new string[maxRperRecordS];
