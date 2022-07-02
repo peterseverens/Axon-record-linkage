@@ -31,58 +31,35 @@ namespace axon_console
         public AxonForm()
         {
             InitializeComponent();
-            //1
+      
             //set build to 64 bit!! 
-
-            //2
-            // -----------------------------------------------
-            // Pre .NET 4.5 or gcAllowVeryLargeObjects unset
-            //const int twoGig = 2147483591; // magic number from .NET
-
-            //var type = typeof(int);          // type to use
-            //var size = Marshal.SizeOf(type); // type size
-            //var num = twoGig / size;         // max element count
-
-            //var arr20 = Array.CreateInstance(type, num);
-            //var arr21 = new byte[num];
-
-            // -----------------------------------------------
-            // .NET 4.5 with x64 and gcAllowVeryLargeObjects set
-            //var arr451 = new byte[2147483591];
-            //var arr452 = Array.CreateInstance(typeof(int), 2146435071);
-            //var arr453 = new byte[2146435071]; // another magic number
+             
 
             System.Collections.IDictionary results = Environment.GetEnvironmentVariables();
-            string result = Environment.GetEnvironmentVariable("gcAllowVeryLargeObjects,");
-            // If necessary, create it.
-
-            //Environment.SetEnvironmentVariable("gcAllowVeryLargeObjects", "true",  EnvironmentVariableTarget.Machine);
+            string resultS0 = Environment.GetEnvironmentVariable("gcAllowVeryLargeObjects,");
+ 
             Environment.SetEnvironmentVariable("gcAllowVeryLargeObjects", "true");
 
-            string result2 = Environment.GetEnvironmentVariable("gcAllowVeryLargeObjects");
-            System.Collections.IDictionary resultsi = Environment.GetEnvironmentVariables();
+            //just checking wether environment variables are set for 64 bit vars
+            string resultS1 = Environment.GetEnvironmentVariable("gcAllowVeryLargeObjects");
+            System.Collections.IDictionary resultI = Environment.GetEnvironmentVariables();
 
-            //zie app.config
-            //<? xml version = "1.0" encoding = "utf-8" ?>
-            //< configuration >   
-            //< startup >  
-            //    < supportedRuntime version = "v4.0" sku = ".NETFramework,Version=v4.6.1" />     
-            //   </ startup >     
-            //< runtime >     
-            //  < gcAllowVeryLargeObjects  enabled = "true" />       
-            // </ runtime >
-            //</ configuration >
+            
 
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // Click on the link below to continue learning how to build a desktop app using WinForms!
+            //Go to Talcott.nl
+
             System.Diagnostics.Process.Start("http://talcott.nl");
         }
 
         private void button_run_Click(object sender, EventArgs e)
         {
+
+            //RUN SYNC
+
             startDateTime = DateTime.Now;
             textBox_inputdir.Focus();
             label_result.Text = "Still busy, running Sync !!";
@@ -91,11 +68,12 @@ namespace axon_console
             Application.DoEvents();
 
             byte iterateN = Convert.ToByte(textBox_iterations.Text);
-            linkmethodNow = -1; if (radioButton_bayesian.Checked) { linkmethodNow = 0; } else { linkmethodNow = 1; }
+            if (radioButton_bayesian.Checked) { linkmethodNow = 0; } else { linkmethodNow = 1; }
 
-           finalResults result= axonGoSync(textBox_inputdir.Text, textBox_filename.Text, textBox_outputdir.Text, "d:/axon/cache", "/", checkBox_multiple.Checked, iterateN);
+            finalResults result = axonGoSync(textBox_inputdir.Text, textBox_filename.Text, textBox_outputdir.Text, "d:/axon/cache", "/", checkBox_multiple.Checked, checkBox_CreateGraph.Checked, iterateN);
 
-            if (result.error) {
+            if (result.error)
+            {
                 label_result.Text = result.result;
             }
             else
@@ -108,6 +86,9 @@ namespace axon_console
 
         private void button_run_async_Click(object sender, EventArgs e)
         {
+
+            //RUN ASYNC
+
             startDateTime = DateTime.Now;
             textBox_inputdir.Focus();
             label_result.Text = "Still busy, running Async!!";
@@ -116,18 +97,18 @@ namespace axon_console
             Application.DoEvents();
 
             byte iterateN = Convert.ToByte(textBox_iterations.Text);
-            linkmethodNow = -1; if (radioButton_bayesian.Checked) { linkmethodNow = 0; } else { linkmethodNow = 1; }
+            if (radioButton_bayesian.Checked) { linkmethodNow = 0; } else { linkmethodNow = 1; }
 
-            axonGoAsync(textBox_inputdir.Text, textBox_filename.Text, textBox_outputdir.Text, "d:/axon/cache", "/", checkBox_multiple.Checked, iterateN);
+            axonGoAsync(textBox_inputdir.Text, textBox_filename.Text, textBox_outputdir.Text, "d:/axon/cache", "/", checkBox_multiple.Checked, checkBox_CreateGraph.Checked, iterateN);
 
             endDateTime = DateTime.Now;
             label_result.Text = "Your output is ready! duration: " + (endDateTime - startDateTime).ToString();
         }
-        public void axonGoAsync(string inputDir, string inputFile, string outputDir, string cachDir, string delimeter, Boolean multi, byte iterateN)
+        public void axonGoAsync(string inputDir, string inputFile, string outputDir, string cachDir, string delimeter, Boolean multi, Boolean graph ,byte iterateN)
         {
 
-            Boolean GraphicShowNow = true;
-
+ 
+            //CHECK WETHER MULTIPLE FILES ARE TO BE READ
             string[] files = new string[1];
             if (!multi)
             {
@@ -135,8 +116,7 @@ namespace axon_console
             
             }
             else
-            {
-                
+            {               
                 try
                 {
                     files = Directory.GetFiles(inputDir, "*.prt", SearchOption.AllDirectories);
@@ -144,7 +124,7 @@ namespace axon_console
                 }
                 catch
                 {
-                    // Ignore folder (access denied).
+                    //Ignore folder (access denied).
                     //rootDirectory = null;
                 }
             }
@@ -157,15 +137,7 @@ namespace axon_console
 
             UInt16[] taskId = new UInt16[Int16.MaxValue];
 
-
-
-
-
-
             Double ThresHoldCriteriumNow = Convert.ToDouble(textBox_ThresHoldCriterium.Text);
-
-
-
 
             for (UInt16 i = 0; i < files.Length; i++)
 
@@ -173,9 +145,7 @@ namespace axon_console
 
                 UInt16 x = i;
                 task[i] = Task.Run(() => {
-                    ////   Task tt = Task.Factory.StartNew(() => {
-                    ////   Task tt = Task.Factory.StartNew(someAction,  CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
-
+                    
                     UInt16 iNow = x;
 
 
@@ -188,7 +158,7 @@ namespace axon_console
 
                     AxC.Linkmethod = linkmethodNow;
                     AxC.ThresHoldCriterium = ThresHoldCriteriumNow;
-                    AxC.AutoSelection = 0; //all fields are used to calculate likelihood.
+              
                     AxC.CriteriumHandling = 3; //get all reocords above threshold
 
                     //!!!!!!!!!!!
@@ -199,10 +169,10 @@ namespace axon_console
                     AxC.chi2WithinShow = 0;
                     AxC.Chi2BetweenShow = 1;
                     AxC.SelectedIdentifiersShow = 1;
-                    AxC.DistributionLikelihoodsShow = 1;
+                   
                     AxC.LinkedSetsShow = 0;
                     AxC.DistributionLinkedRecordsNShow = 1;
-                    AxC.GraphicShow = 1;
+                    if (graph) { AxC.DistributionLikelihoodsShow = 1; } else { AxC.DistributionLikelihoodsShow = 0; };
 
 
                     string inputFileNow = inputDir + "\\" + files[iNow] + ".prt"; ;
@@ -220,12 +190,7 @@ namespace axon_console
                     StreamWriter fileReport = new System.IO.StreamWriter(linkReportFile);
                     StreamWriter fileScores = new System.IO.StreamWriter(linkOutputFile);
                     StreamWriter fileGraph = new System.IO.StreamWriter(linkGraphFile);
-
-
-             
-
-
-
+                     
 
                     StreamReader fileIn = new System.IO.StreamReader(inputFileNow);
 
@@ -251,14 +216,11 @@ namespace axon_console
                     }
 
 
-
                     fileIn = new System.IO.StreamReader(inputFileNow);
                     dataReadResults resulDataReading = AxC.SetsGetDelimetedReadAllData(fileIn,  rpos);
 
                     Ns = resulDataReading.Ns;
                     Nr = resulDataReading.Nr;
-
-
 
                     if (Ns > 0)
                     {
@@ -288,7 +250,6 @@ namespace axon_console
 
 
                         string resultArraysLinkage = AxC.arraysIniLinkage(result[0], result[1]);
-                        //result_info.Text = sb2.ToString();
 
                         if (resultArraysLinkage == "ok")
                         {
@@ -308,7 +269,6 @@ namespace axon_console
 
                         Graphics g = graph_linkage.CreateGraphics();
                         g.Clear(System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255))))));
-                        //g.FillRectangle(new SolidBrush(Color.FromArgb(0, Color.Black)), graph_linkage.DisplayRectangle);
                         Application.DoEvents();
                         for (byte ii = 0; ii < iterateN; ii++)
                         {
@@ -328,9 +288,7 @@ namespace axon_console
 
                             float percentageLinked = Convert.ToSingle(AxC.blocksLinkedN) / Convert.ToSingle(AxC.Ns);
 
-                            //if (!multi) GraphLikelihoods2(AxC.Linkmethod, ii, AxC.scoresN , -99999, 99999, AxC.ThresHoldCriterium, AxC.Nsmall, percentageLinked);
-
-                            if (AxC.GraphicShow  == 1) writeGraphScores(AxC.scoresN, AxC.scoresV, AxC.Nsmall, AxC.Linkmethod, AxC.ThresHoldCriterium, percentageLinked, fileGraph);
+                            if (graph) writeGraphScores(AxC.scoresN, AxC.scoresV, AxC.Nsmall, AxC.Linkmethod, AxC.ThresHoldCriterium, percentageLinked, fileGraph);
 
 
                         }
@@ -339,10 +297,6 @@ namespace axon_console
                         fileReport.Close();
                         fileScores.Close();
                         fileGraph.Close();
-
-
-
-
 
 
                     }
@@ -416,7 +370,7 @@ namespace axon_console
 
 
             }
-            if (GraphicShowNow = true)
+            if (graph)
             {
                 string[] filesGra = new string[files.Length];
                 foreach (var t in task)
@@ -427,34 +381,27 @@ namespace axon_console
             }
 
 
-            //foreach (var t in task) { t.Dispose(); }
             for (UInt16 i = 0; i < files.Length; i++) { task[i].Dispose(); }
-
-
-            //fileCombine.Close();
 
 
         }
 
-        public finalResults axonGoSync(string inputDir, string inputFile, string outputDir, string cachDir, string delimeter, Boolean multi, byte iterateN)
+        public finalResults axonGoSync(string inputDir, string inputFile, string outputDir, string cachDir, string delimeter, Boolean multi, Boolean graph, byte iterateN)
         {
 
 
             finalResults procResult = new finalResults();
 
-            Boolean GraphicShow = false;
-
-
-
+            //CHECK WETHER MULTIPLE FILES ARE TO BE READ
             string[] files = new string[1];
             if (!multi)
             {
                 files[0] = inputFile;
-                GraphicShow = true;
+                
             }
             else
             {
-                GraphicShow = true;
+                
                 try
                 {
                     files = Directory.GetFiles(inputDir, "*.prt", SearchOption.AllDirectories);
@@ -462,7 +409,7 @@ namespace axon_console
                 }
                 catch
                 {
-                    // Ignore folder (access denied).
+                    //Ignore folder (access denied).
                     //rootDirectory = null;
                 }
             }
@@ -490,7 +437,7 @@ namespace axon_console
 
                 AxC.Linkmethod = linkmethodNow;
                 AxC.ThresHoldCriterium = ThresHoldCriteriumNow;
-                AxC.AutoSelection = 0; //all fields are used to calculate likelihood.
+ 
                 AxC.CriteriumHandling = 3; //get all reocords above threshold
                 
                 //!!!!!!!!!!!
@@ -501,12 +448,12 @@ namespace axon_console
                 AxC.chi2WithinShow = 0;
                 AxC.Chi2BetweenShow = 1;
                 AxC.SelectedIdentifiersShow = 1;
-                AxC.DistributionLikelihoodsShow = 1;
+ 
                 AxC.LinkedSetsShow = 0;
                 AxC.DistributionLinkedRecordsNShow = 1;
-                AxC.GraphicShow = 1;
+                if (graph) { AxC.DistributionLikelihoodsShow = 1; } else { AxC.DistributionLikelihoodsShow = 0; };
 
-                 
+
 
                 string inputFileNow = inputDir + "\\" + files[iNow] + ".prt"; ;
                 string inputFileCopy = outputDir + "\\" + files[iNow] + ".prc";
@@ -549,7 +496,6 @@ namespace axon_console
                 if (resultArraysData != "ok")
                 {
 
-                    //result_info.Text = "cannot create data arrays. Total number of blocks: " + Ns.ToString() + " Total number of records: " + Nr.ToString();
                     procResult.error = true;
                     procResult.result = "insufficient memory: cannot create data arrays. Total number of blocks: " + Ns.ToString() + " Total number of records: " + Nr.ToString();
                     return procResult;
@@ -593,15 +539,10 @@ namespace axon_console
                     string resultArraysLinkage = AxC.arraysIniLinkage(result[0], result[1]);
                     //result_info.Text = sb2.ToString();
 
-                    if (resultArraysLinkage == "ok")
+                    if (resultArraysLinkage != "ok")
                     {
+                   
 
-                    }
-                    else
-                    {
-
-                        //result_info.Text = "cannot create probability arrays. Total number of categories to cross : " + result[0].ToString();
-                        return procResult;
                         procResult.result = "insufficient memory: cannot create probability arrays. Total number of categories to cross : " + result[0].ToString();
                         return procResult;
                     }
@@ -613,7 +554,6 @@ namespace axon_console
 
                     Graphics g = graph_linkage.CreateGraphics();
                     g.Clear(System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255))))));
-                    //g.FillRectangle(new SolidBrush(Color.FromArgb(0, Color.Black)), graph_linkage.DisplayRectangle);
                     Application.DoEvents();
 
 
@@ -637,9 +577,7 @@ namespace axon_console
 
                         float percentageLinked = Convert.ToSingle(AxC.blocksLinkedN) / Convert.ToSingle(AxC.Ns);
 
-                        //if (!multi) GraphLikelihoods2(AxC.Linkmethod, ii, AxC.scoresN , -99999, 99999, AxC.ThresHoldCriterium, AxC.Nsmall, percentageLinked);
-
-                        if (GraphicShow) writeGraphScores(AxC.scoresN, AxC.scoresV, AxC.Nsmall, AxC.Linkmethod, AxC.ThresHoldCriterium, percentageLinked, fileGraph);
+                        if (graph) writeGraphScores(AxC.scoresN, AxC.scoresV, AxC.Nsmall, AxC.Linkmethod, AxC.ThresHoldCriterium, percentageLinked, fileGraph);
 
 
                     }
@@ -699,7 +637,7 @@ namespace axon_console
 
 
             }
-            if (GraphicShow)
+            if (graph)
             {
                 string[] filesGra = new string[files.Length];
                 for (UInt16 i = 0; i < files.Length; i++)
@@ -719,6 +657,9 @@ namespace axon_console
 
         private void BuildRandomFile(string outputFile, string cNin, string cVin, string cCin, string delimeter)
         {
+
+            //BUILD ARANDOM TEST FILE
+
             AxonCalc10 AxC = new AxonCalc10();
 
             string fileName = outputFile;
@@ -753,6 +694,8 @@ namespace axon_console
         private void combineFiles(string[] files, string fileOutNow)
         {
 
+            //COMBINE FILES FROM MULTI RESULT (multiple inputfiles in a directory) 
+
             System.IO.StreamWriter fileOut = new System.IO.StreamWriter(fileOutNow);
 
             for (UInt16 i = 0; i < files.Length; i++)
@@ -771,9 +714,9 @@ namespace axon_console
 
         private void writeGraphScores(double[] scoresN, double[] scoresV, Int64 nSmall, int Linkmethod, double ThresHoldCriterium, float percentageLinked, StreamWriter fileGraphNow)
         {
+            //WRITE LIKELIHOOD DISTRIBUTION TO REPORT
 
             string line = nSmall.ToString() + "," + Linkmethod.ToString() + "," + ThresHoldCriterium.ToString("0.00", CultureInfo.InvariantCulture) + "," + percentageLinked.ToString("0.00", CultureInfo.InvariantCulture);
-            //fileGraphNow.WriteLine(line + "\r\n");
             fileGraphNow.WriteLine(line);
             line = "";
             for (UInt16 c = 0; c < 101; c++)
@@ -793,15 +736,12 @@ namespace axon_console
 
 
 
-
-
-
-
-
-
-        //private void GraphLikelihoods( int Linkmethod, int iterNumber, double[] scoresN,    double ll, double lh, double Threshold, Int64 Nsmall, float percentageLinked, string linkGraphFileNow)
+ 
         private void GraphLikelihoods(string[] fileNow, Boolean multi, int linkMethodNow)
         {
+
+            //GRAPH LIKELIHOOD DISTRIBUTION TO SCREEN
+
             int[] iterNumber = new int[fileNow.Length];
             int[] nSmall = new int[fileNow.Length];
             int[] Linkmethod = new int[fileNow.Length];
@@ -990,8 +930,6 @@ namespace axon_console
                         float endD = (hv - hvn) / (hv - lv);
                         float wwAdjusted = ww * sizeD;
                         float wwStart = ww * startD;
-                        //float wwEnd = ww * endD;
-                        //float wwTest = wwStart + wwAdjusted + wwEnd;
 
                         float x = 0;
                         for (UInt16 c = 0; c < 101; c++)
@@ -999,7 +937,6 @@ namespace axon_console
                             if (sizeD == 1)
                             {
                                 x = m + ww * c / 101;
-                                //string cTitle = c.ToString();
                                 double cutOff = 0; if (linkMethodNow == 1) cutOff = 1;
 
                                 if (scoresV[i, iter, c] < cutOff)
@@ -1033,8 +970,6 @@ namespace axon_console
                             xOld = x;
                             yOld = y;
                         }
-
-                        //If (Gnr >= 50 Then Call WindowsRemove(0, 1)
                     }
                 }
             }
@@ -1077,9 +1012,6 @@ namespace axon_console
         }
 
 
-
-
-
         public StringBuilder getFileContent(string fileNow)
         {
             StringBuilder sb = new StringBuilder();
@@ -1096,17 +1028,7 @@ namespace axon_console
 
         private void button_openfile_Click_1(object sender, EventArgs e)
         {
-            //string[] fileOpions = new string[0];
-            //textBox_inputdir.Text = fileOpen(fileOpions);
-            //OpenFileDialog ofd = new OpenFileDialog();
-
-            //ofd.InitialDirectory = textBox_inputdir.Text;
-            //ofd.Filter = "prt files (*.prt)|*.prt|All files (*.*)|*.*";
-            //ofd.ShowDialog();           
-            //textBox_inputdir.Text = ofd.FileName;
-
-            //var fileContent = string.Empty;
-            //var filePath = string.Empty;
+            
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -1119,19 +1041,9 @@ namespace axon_console
                 {
                     //Get the path of specified file
                     string strPath = openFileDialog.FileName;
-
-                    //string strPath = "d://myfiles//ref//file1.txt";
-
-                    //function call to get the filename
                     textBox_filename.Text = Path.GetFileName(strPath);
                     textBox_inputdir.Text = Path.GetDirectoryName(strPath);
-                    //Read the contents of the file into a stream
-                    //var fileStream = openFileDialog.OpenFile();
-
-                    //using (StreamReader reader = new StreamReader(fileStream))
-                    //{
-                    //    fileContent = reader.ReadToEnd();
-                    //}
+                    
                 }
             }
 

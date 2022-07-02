@@ -151,7 +151,6 @@ namespace axon_console
         public double ThresHoldPercentageCriterium;
         public double ThresHoldCriterium;
         public double DifferenceCriterium;
-        public int AutoSelection;
         public int Iterations;
         public int Linkmethod;
         public int IterNumber;
@@ -164,7 +163,7 @@ namespace axon_console
         public int Chi2BetweenShow;
         public int SelectedIdentifiersShow;
         public int CategoryFrequenciesShow;
-        public int GraphicShow;
+        
         //OUTPUT LINKAGE
 
         public int DistributionLikelihoodsShow;
@@ -175,7 +174,9 @@ namespace axon_console
         public string arraysIniGeneric(UInt16 Vc0, UInt16 Vc, UInt16 Vc1)
         {
 
-            //RECODED DATA
+            //INIT ARRAYS I
+
+            //RECODED DATA TABLES
             code0 = new string[Vc0 + 1, maxCat];
             code = new string[Vc + 1, maxCat];
             code1 = new string[Vc1 + 1, maxCat];
@@ -203,7 +204,6 @@ namespace axon_console
             posLi = new UInt64[maxVnowS, maxVnowS];
 
 
-
             //selections
 
             SelectVar = new UInt16[maxVnow, maxVnow]; //vc0 vc
@@ -225,6 +225,10 @@ namespace axon_console
 
         public string arraysIniData()
         {
+
+            //INIT ARRAYS II
+
+            //DATA
 
             string t = "ok";
             try
@@ -249,8 +253,36 @@ namespace axon_console
             return t;
         }
 
+        public string arraysIniLinkage(UInt64 catN, UInt64 cat1N)
+        {
+            //INIT ARRAYS III
+
+            //LINKAGE PARAMETERS
+
+            string t = "ok";
+
+            try
+            {
+                sPP = new UInt64[catN];
+                sPPn = new UInt64[catN];
+                sPPratio = new float[catN]; //4,4,vc0 vc
+                sPPChi = new float[catN];
+
+                ePPratio = new float[cat1N, Vc1];
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                t = "\n Cannot create probabilities arrays. error:" + e.Message;
+
+            }
+            return t;
+
+        }
+
         public UInt64[] countTotalCategories()
         {
+
+            //COUNT THE TOTAL NUMBER OF CATEGORIES TO INIT THE VARIABLES
 
             NcVc0H = 0; NcVcH = 0; NcVc1H = 0;
             for (UInt16 v0 = 0; v0 < Vc0; v0++) { if (NcVc0[v0] > NcVc0H) { NcVc0H = NcVc0[v0]; } }
@@ -277,30 +309,12 @@ namespace axon_console
 
         }
 
-        public string arraysIniLinkage(UInt64 catN, UInt64 cat1N)
-        {
-            string t = "ok";
-
-            try
-            {
-                sPP = new UInt64[catN];
-                sPPn = new UInt64[catN];
-                sPPratio = new float[catN]; //4,4,vc0 vc
-                sPPChi = new float[catN];
-
-                ePPratio = new float[cat1N, Vc1];
-            }
-            catch (IndexOutOfRangeException e)
-            {
-                t = "\n Cannot create probabilities arrays. error:" + e.Message;
-
-            }
-            return t;
-
-        }
+       
 
         public string SubReportTitle(string Titel)
         {
+
+            // TITLE OF REPORT
 
             String Day = DateTime.Now.Day.ToString();
             String Month = DateTime.Now.Month.ToString();
@@ -319,17 +333,12 @@ namespace axon_console
         }
 
 
-
-
-        public void MsgBox(string remark) { }
-
-
-
-
-
+ 
 
         public void getCriteria()
         {
+
+            //NOT IMPLEMENTED : TO GET CRITERIA FROM TEXT FILE
 
             string[] co = new string[9];
 
@@ -343,22 +352,7 @@ namespace axon_console
                 MissingsInclude = 1;
             }
 
-            if (co[1] == "linkvariables")
-            {
-
-                if (co[2] == "auto")
-                {
-
-                    AutoSelection = 1;
-
-                }
-                if (co[2] == "manual")
-                {
-
-                    AutoSelection = 0;
-
-                }
-            }
+            
 
             if (co[1] == "linkmethod")
             {
@@ -433,6 +427,8 @@ namespace axon_console
         public void getCriteriaDefaults()
         {
 
+            // NOT IMPLEMETED: SET THE DEFAULT CRITERIA
+
             DataDir = "c:";
             BinDir = "c:";
             ResultDir = "c:";
@@ -441,7 +437,7 @@ namespace axon_console
 
             //PARAMETERS START CLASSIFICATION
 
-            AutoSelection = 0;
+ 
             ThresHoldPercentageCriterium = 90;
             MissingsInclude = 1;
 
@@ -450,7 +446,7 @@ namespace axon_console
             CriteriumHandling = 3;
             ThresHoldCriterium = -99;
             DifferenceCriterium = -99;
-            AutoSelection = 0;
+ 
             Iterations = 3;
             Linkmethod = 0;
 
@@ -468,9 +464,8 @@ namespace axon_console
         }
 
         public void StandardsSave(string standardsFile)
-        {   //         "C:\\standard.std";  
-
-
+        {
+            // NOT IMPLEMETED: SAVE THE PERSONALIZED DEFAULTS TO BINARY FILE
 
             try
             {
@@ -495,7 +490,6 @@ namespace axon_console
 
                 // PARAMETERS START CLASSIFICATION
 
-                bw.Write(AutoSelection);
                 bw.Write(ThresHoldPercentageCriterium);
                 bw.Write(MissingsInclude);
 
@@ -504,7 +498,7 @@ namespace axon_console
                 bw.Write(CriteriumHandling);
                 bw.Write(ThresHoldCriterium);
                 bw.Write(DifferenceCriterium);
-                bw.Write(AutoSelection);
+ 
                 bw.Write(Iterations);
                 bw.Write(Linkmethod);
 
@@ -520,7 +514,7 @@ namespace axon_console
                 bw.Write(LinkedSetsShow);
 
 
-                bw.Write(GraphicShow);
+       
 
                 bw.Write(Delimeter);
                 bw.Close();
@@ -534,6 +528,8 @@ namespace axon_console
 
         public void StandardsGet(string standardsFile)
         {
+
+            // NOT IMPLEMETED: GET THE PERSONALIZED DEFAULTS FROM BINARY FILE
 
             try
             {
@@ -566,7 +562,7 @@ namespace axon_console
 
                 // PARAMETERS START CLASSIFICATION
 
-                AutoSelection = br.ReadInt32();
+ 
                 ThresHoldPercentageCriterium = br.ReadInt32();
                 MissingsInclude = br.ReadInt32();
 
@@ -575,7 +571,7 @@ namespace axon_console
                 CriteriumHandling = br.ReadInt32();
                 ThresHoldCriterium = br.ReadInt32();
                 DifferenceCriterium = br.ReadInt32();
-                AutoSelection = br.ReadInt32();
+ 
                 Iterations = br.ReadInt32();
                 Linkmethod = br.ReadInt32();
 
@@ -590,7 +586,7 @@ namespace axon_console
                 DistributionLinkedRecordsNShow = br.ReadInt32();
                 LinkedSetsShow = br.ReadInt32();
 
-                GraphicShow = br.ReadInt32();
+       
 
                 Delimeter = br.ReadChar();
 
@@ -608,18 +604,14 @@ namespace axon_console
         public void SetsRandom(UInt64 NsIn, UInt16 Vin, UInt16 Cin)
         {
 
+            //BUILD RANDOM SET OF DATA FOR TESTING (WITH EFFECT FROM INDEP X to DEP X +1)
+
             Random rnd = new Random();
 
             Ns = NsIn;
             if (Ns < 500) { Ns = 500; }
 
-            //ReDim rr(Ns)
-            //ReDim Pr(Ns)
-            //ReDim Hscore(1 To Ns) 'As Integer
-
-
-
-
+ 
             Vc0 = Vin;
             Vc = Convert.ToUInt16(Vc0 + 1);
             Vc1 = 1;
@@ -685,9 +677,9 @@ namespace axon_console
 
             for (UInt16 v = 0; v < Vc; v++)
             {
-                NcVc[v] = Convert.ToUInt16(Cin + 1);    //altijd 1 hoger !! : Convert.ToInt16(rnd.Next(1, 2))) geeft altijd 1 extra categorie.. (dan alleen 1 toevoegen)
+                NcVc[v] = Convert.ToUInt16(Cin + 1);    
             }
-            //NcVc[Vc] = Convert.ToUInt16(NcVc0[Vc0] + 1);  //correction..
+
             for (UInt16 v1 = 0; v1 < Vc1; v1++)
             {
                 NcVc1[v1] = 2;
@@ -696,7 +688,7 @@ namespace axon_console
 
 
 
-            UInt64 posVarsV = 0; UInt64 posVarsK = 0; UInt64 PrNow = 0;
+            UInt64 PrNow = 0;
             string respNr0Old = "";
             for (UInt64 s = 1; s < Ns + 1; s++)
             {
@@ -772,15 +764,9 @@ namespace axon_console
                     }
                 }
 
-
-
-
-
                 saveSetToArray(s, PrNow, rnNow, SRdata);
                 Nrr[s] = rnNow;
 
-
-                //Pr[s+1]  =Pr[s] + rnNow;
                 PrNow = PrNow + rnNow;
             }
 
@@ -808,13 +794,53 @@ namespace axon_console
                     code1[v1, c] = "C" + c.ToString("0");
                 }
             }
-            //frequencies();
-
 
         }
 
+        public void SetsWriteDelimeted(System.IO.StreamWriter file, string dChar, bool combine)
+        {
+
+            //WRITE DATASET TO TEXT FILE (can be the created random set or any dataset read in from textfile or database)
+
+            //FILE INFO
+            if (!combine)
+            {
+                t = Vc0.ToString() + dChar + Vc.ToString() + dChar + Vc1.ToString(); file.WriteLine(t);
+                t = ""; file.WriteLine(t);
+                for (UInt16 i = 0; i < Vc0; i++) { t = Var0Labels[i] + dChar + missingS0[i]; file.WriteLine(t); }
+                t = ""; file.WriteLine(t);
+                for (UInt16 i = 0; i < Vc; i++) { t = VarLabels[i] + dChar + missingS[i]; file.WriteLine(t); }
+                t = ""; file.WriteLine(t);
+                for (UInt16 i = 0; i < Vc1; i++) { t = Var1Labels[i] + dChar + missingS1[i]; file.WriteLine(t); }
+            }
+
+            //DATA
+            t = ""; file.WriteLine(t);
+
+            Int64 PrNow = 0;
+            for (UInt64 s = 1; s <= Ns; s++)
+            {
+                t = s.ToString() + dChar;
+                t += RespNr0[s].ToString() + dChar.ToString(); ;
+                for (UInt16 v0 = 0; v0 < Vc0; v0++) { t += code0[v0, SetVar0[s, v0]] + dChar.ToString(); ; }
+                file.WriteLine(t);
+                for (Byte r = 1; r <= Nrr[s]; r++)
+                {
+                    t = s.ToString() + dChar.ToString(); ;
+                    t += RespNr[PrNow + r].ToString() + dChar.ToString(); ;
+                    //for (UInt16 k = 0; k < Kc; k++) { t += "sk" + k.ToString() + dChar; }
+                    for (UInt16 v = 0; v < Vc; v++) { t += code[v, SetVar[PrNow + r, v]] + dChar.ToString(); }
+                    for (UInt16 v1 = 0; v1 < Vc1; v1++) { t += code1[v1, SetVar1[PrNow + r, v1]] + dChar.ToString(); }
+                    file.WriteLine(t);
+                }
+                t = ""; file.WriteLine(t);
+                PrNow += Nrr[s];
+            }
+        }
         public Boolean saveSetToArray(UInt64 sNow, UInt64 PrNow, Byte rNow, UInt16[,] SRdata)
         {
+
+            //SAVE A BLOCK TO THE DATA ARRAY
 
             for (UInt16 v0 = 0; v0 < Vc0; v0++)
             {
@@ -838,6 +864,8 @@ namespace axon_console
 
         public StringBuilder Probabilities(byte iter_n)
         {
+
+            //CALCULATE PROBABILITES
 
             Int64 PrNow = 0;
 
@@ -914,17 +942,8 @@ namespace axon_console
 
                 t = "Iteration Step 1: Likelihoods based on raw linked records";
 
-
-
-                //  ReDim Hscore(Nr)
-
-                //for (INt64 s = 1; s < Ns + 1; s++)
-                //{
-                //    for (byte r = 1; r < Nrr[s] + 1; r++)
-                //    {
-                //        Hscore[Pr[s] + r] = 1;
-                //   }
-                //}
+                 
+                 
                 for (UInt16 v0 = 0; v0 < Vc0; v0++)
                 {
                     for (UInt16 v = 0; v < Vc; v++)
@@ -944,21 +963,14 @@ namespace axon_console
             }
 
 
-
-
-            // ReDim PP(NcVc0H, NcVcH, 1 To Vc0, 1 To Vc) As Single
-            // ReDim PPn(NcVc0H, NcVcH, 1 To Vc0, 1 To Vc) As Single
-            // ReDim PPChi(NcVc0H, NcVcH, 1 To Vc0, 1 To Vc)
-            // ReDim PPratio(NcVc0H, NcVcH, 1 To Vc0, 1 To Vc)
-
-
+             
 
 
             //CONSTRUCT CROSSTABLES OF PP and PPn (linked and not linked)  
 
             for (UInt64 s = 1; s < Ns + 1; s++)
             {
-                //if (Math.Round(Convert.ToSingle(s) / 1000) == Convert.ToSingle(s) / 1000) { saveStatus(statusFileName, "calculating probabilities: " + s.ToString()); }
+ 
                 //Get data of one set         
                 UInt16[,] SRdata = new UInt16[maxRperRecordS, maxVnow];
 
@@ -997,9 +1009,6 @@ namespace axon_console
                         {
                             if (SelectVar[v0, v] == 1)
                             {
-
-
-
                                 UInt64 i = posLi[v0, v] + SRdata[0, v0] * (ulong)NcVc[v] + SRdata[r, v];
                                 if (Hscore[PrNow + r] == 1)
                                 {
@@ -1009,24 +1018,15 @@ namespace axon_console
                                 {
                                     sPPn[i] += 1;
                                 }
-
-
-
-
-                            }
-
+                             }
                         }
                     }
                     for (UInt16 v1 = 0; v1 < Vc1; v1++)
                     {
                         if (SelectVar1[v1] > 0)
                         {
-
                             if (Hscore[PrNow + r] == 1) { ePP[SRdata[r, Vc + v1], v1] += 1; }
                             if (Hscore[PrNow + r] == 0) { ePPn[SRdata[r, Vc + v1], v1] += 1; }
-
-
-
                         }
                     }
                 }
@@ -1162,8 +1162,8 @@ namespace axon_console
 
                     }
 
-                    if (Linkmethod == 0)
-                    {
+                    //if (Linkmethod == 0)
+                    //{
                         for (UInt16 c1 = 0; c1 < NcVc1[v1]; c1++)
                         {
 
@@ -1176,41 +1176,37 @@ namespace axon_console
                                 if (observed > 0 && N > 0)
                                 {
                                     ePPratio[c1, v1] = (observed / N) / (notobserved / Nn);
-                                    //ePPratio[c1, v1] = Convert.ToSingle((observed / N) / (notobserved / Nn));
+                                    
                                 }
+                                
                             }
 
                         }
-                    }
-
+                    //}
+                     
 
                 }
             }
 
-            if (AutoSelection == 1)
+
+            if (IterNumber == 0)
             {
-                AutoSelectVariables();
-            }
-            else
-            {
-                if (IterNumber == 0)
+                //   ReDim SelectVar(Vc0, Vc)
+                //   ReDim SelectVar1(Vc1)
+                for (UInt16 v0 = 0; v0 < Vc0; v0++)
                 {
-                    //   ReDim SelectVar(Vc0, Vc)
-                    //   ReDim SelectVar1(Vc1)
-                    for (UInt16 v0 = 0; v0 < Vc0; v0++)
+                    for (UInt16 v = 0; v < Vc; v++)
                     {
-                        for (UInt16 v = 0; v < Vc; v++)
-                        {
 
-                            SelectVar[v0, v] = 1;
-                        }
-                    }
-                    for (UInt16 v1 = 0; v1 < Vc1; v1++)
-                    {
-                        SelectVar1[v1] = 1;
+                        SelectVar[v0, v] = 1;
                     }
                 }
+                for (UInt16 v1 = 0; v1 < Vc1; v1++)
+                {
+                    SelectVar1[v1] = 1;
+                }
             }
+
 
 
 
@@ -1220,6 +1216,8 @@ namespace axon_console
             if ((Vc + Vc0 + Vc1) * (NcVc0H + NcVcH + NcVc1H) > 1000) { chi2WithinShow = 0; }
             if (chi2WithinShow == 1)
             {
+
+                //SHOW RATIOS OR CHI SQUARED BETWEEN THE VARIABLES PER CATEGORY (DEFAULT IS DO NOT SHOW< CAN BE MUCH TEXT WITH WHEN MANY CATEGORIES) 
                 t = "";
                 t += "N Within";
                 t += "\r\n";
@@ -1281,7 +1279,7 @@ namespace axon_console
 
                 t = "";
                 if (Linkmethod == 0) { t += "Likelihood Ratio's Within"; }
-                if (Linkmethod == 1) { t += "Chi Square Within"; } // ; Independent ; " + Var0Labels[v0] + "&& dependent ; " + VarLabels[v] + " ; p = " + (CHIp[v0, v]).ToString("0.00", CultureInfo.InvariantCulture) + "}";
+                if (Linkmethod == 1) { t += "Chi Square Within"; } // ; Independent ; " + Var0Labels[v0] + "&& dependent ; " + VarLabels[v] + " ; 
                 t += "\r\n";
                 sb.Append(t); t = "";
                 for (UInt16 v0 = 0; v0 < Vc0; v0++)
@@ -1362,11 +1360,12 @@ namespace axon_console
 
             }
 
-           
 
             if (Chi2BetweenShow == 1)
             {
-                inform("");
+
+                //SHOW RATIOS OR CHI SQUARES BETWEEN VARIABLES (ADDED (CHI SQUARE) or MULTIPLIED (RATIO's) WITHINN SCORES)
+
                 t  = "\r\n"; sb.Append(t);  t = "";
                 if (Linkmethod == 0) { t += "Ratio''s between Dependent and Independ Identifiers"; };
                 if (Linkmethod == 1) { t += "Chi Squares between Dependent and Independ Identifiers"; };
@@ -1405,9 +1404,8 @@ namespace axon_console
                 }
                 t += "\r\n"; sb.Append(t); t = "";
 
-                if (Linkmethod == 0)
-                {
-                    if (Linkmethod == 0) { t = "\r\n"; ; t += "Likelihood Ratio's Within"; }
+ 
+                     t = "\r\n"; ; t += "Likelihood Ratio's Within"; 
                     t += "\r\n";
 
                     for (UInt16 v1 = 0; (v1 < Vc1); v1++)
@@ -1424,10 +1422,10 @@ namespace axon_console
                         }
                         t += "\r\n";
                     }
-                }
+ 
                 t += "\r\n"; sb.Append(t); t = "";
             }
-            // ReDim PP(0, 0, 0, 0)
+ 
 
             bool correct =true;
             if (correct)
@@ -1618,7 +1616,7 @@ namespace axon_console
         public void correctInterDependencies() {
 
 
-            //Completely Wrong!!
+            //NOT IMPLEMENTED: CORRECT EVYRY INDIVIDUAL COMBINATION OF EACH BLOCK(independent record with dependend record 1 then independent record with dependend record 2 etc..  )
 
             for (UInt16 v = 0; v < Vc; v++)
             {
@@ -1659,7 +1657,7 @@ namespace axon_console
         {
 
 
-            //TEST CORRECTION FOR  INTERCORRELATIONS
+            ////NOT IMPLEMENTED: TEST CORRECTION FOR  INTERCORRELATIONS
 
             float[,] ToCorrectOut = new float[Vc0, Vc];
 
@@ -1721,9 +1719,13 @@ namespace axon_console
 
             return ToCorrectOut;
         }
+
+
         public dataCheckResults SetsGetDelimetedCountAndCheck(System.IO.StreamReader file)
         {
-             
+     
+            //FIRST STEP OF READING DATA: FIRST CHECK N etc..
+
             dataCheckResults result = new dataCheckResults();
 
             char dChar = Delimeter;
@@ -1758,8 +1760,7 @@ namespace axon_console
                 return result;
             }
          
-
-
+ 
             UInt16 i = 0; UInt64 r = 0; t = "";
 
             try
@@ -1812,9 +1813,7 @@ namespace axon_console
                 result.error = true;
                 return result;
             }
- 
-
-
+  
 
             Int16[,] SRdata = new Int16[maxRperRecordS, maxVnow];
 
@@ -1829,41 +1828,33 @@ namespace axon_console
             try
             {
 
-               
-            do
-            {
 
-                do { t = file.ReadLine(); if (t == null) { break; } } while (t.Trim() == "");
-                if (t != null) { words = t.Split(dChar); }
-                if (RecordNr == words[0].Trim() || t == null) { i += 1; } else { i = 0; }
-                if (i == 0)
+                do
                 {
 
-                    if (s > 0) { }//SRdata = recodeVars(rnNow, SetVarI); }
-                                  //SetVarI = new string[maxRperRecordS, maxVnow];
-                    s += 1; rnNow = 0;
-                    //if (Math.Round(Convert.ToSingle(s) / 1000) == Convert.ToSingle(s) / 1000) { saveStatus(statusFileName, "reading block: " + s.ToString()); }
-                    RecordNr = words[0].Trim();
+                    do { t = file.ReadLine(); if (t == null) { break; } } while (t.Trim() == "");
+                    if (t != null) { words = t.Split(dChar); }
+                    if (RecordNr == words[0].Trim() || t == null) { i += 1; } else { i = 0; }
+                    if (i == 0)
+                    {
 
+                        s += 1; rnNow = 0;
+                        RecordNr = words[0].Trim();
 
-                }
-                if (i > 0 & i < maxRperRecordS)
-                {
-                    r += 1; rnNow += 1;
-                    //RespNr[s] = words[1].Trim();  //RespNr[(Pr[s] + r)]
-                    //RespNr[r] = words[1].Trim();
+                    }
+                    if (i > 0 & i < maxRperRecordS)
+                    {
+                        r += 1; rnNow += 1;
 
-
-
-                }
-                else
-                {
-                    //just omit theese (should give a warning to!!;
-                }
+                    }
+                    else
+                    {
+                        //just omit this (but should give a warning  !!;
+                    }
 
 
 
-            } while (t != null);
+                } while (t != null);
             }
             catch (Exception e)
             {
@@ -1887,11 +1878,13 @@ namespace axon_console
 
             file.Close();
             return result;
-            }
+        }
 
         public dataReadResults SetsGetDelimetedReadAllData(System.IO.StreamReader file,    UInt64 rpos)
-
         {
+
+            //SECOND STEP OF READING DATA: READ AND RECODE AND SAVE TO DATA ARRAy.
+
             char dChar = Delimeter;
             dataReadResults result = new dataReadResults();
 
@@ -1926,8 +1919,10 @@ namespace axon_console
                 else
                 {
 
+                    //recode variables
                     SRdata = recodeVars(rnNow, SetVarI);
                     PrNow = PrNowOld; PrNowOld = r;
+                    //add to frequencies
                     Frequencies(rnNow, SRdata);
 
                     saveSetToArray(s, PrNow, rnNow, SRdata); Nrr[s] = rnNow;
@@ -1940,9 +1935,10 @@ namespace axon_console
                     if (s > 0)
                     {
 
+                        //recode variables
                         SRdata = recodeVars(rnNow, SetVarI);
-                        //Pr[s+1] = r;
                         PrNow = PrNowOld; PrNowOld = r;
+                        //add to frequencies
                         Frequencies(rnNow, SRdata);
                         saveSetToArray(s, PrNow, rnNow, SRdata); Nrr[s] = rnNow;
 
@@ -1980,25 +1976,12 @@ namespace axon_console
 
                         SetVarI[rnNow, Vc + v1] = words[2 + Vc + v1];
                     }
-
                 }
-
-
-
             } while (t != null);
 
 
             Ns = s; Nr = r;
-            //frequencies();
-
-
-
-            //  Close #3
-
-
-
-            //inform("");
-
+ 
             result.Ns = Ns;
             result.Nr = Nr;
             result.result = "reading data Ok!";
@@ -2006,53 +1989,13 @@ namespace axon_console
             return result;
         }
 
-        public void SetsWriteDelimeted(System.IO.StreamWriter file, string dChar, bool combine)
-        {
-
-            //System.IO.StreamWriter file = new System.IO.StreamWriter(rawfileNow);
-
-            //FILE INFO
-            if (!combine)
-            {
-                t = Vc0.ToString() + dChar + Vc.ToString() + dChar + Vc1.ToString(); file.WriteLine(t);
-                t = ""; file.WriteLine(t);
-                for (UInt16 i = 0; i < Vc0; i++) { t = Var0Labels[i] + dChar + missingS0[i]; file.WriteLine(t); }
-                t = ""; file.WriteLine(t);
-                for (UInt16 i = 0; i < Vc; i++) { t = VarLabels[i] + dChar + missingS[i]; file.WriteLine(t); }
-                t = ""; file.WriteLine(t);
-                for (UInt16 i = 0; i < Vc1; i++) { t = Var1Labels[i] + dChar + missingS1[i]; file.WriteLine(t); }
-            }
-
-            //DATA
-            t = ""; file.WriteLine(t);
-
-            Int64 PrNow = 0;
-            for (UInt64 s = 1; s <= Ns; s++)
-            {
-                t = s.ToString() + dChar;
-                t += RespNr0[s].ToString() + dChar.ToString(); ;
-                for (UInt16 v0 = 0; v0 < Vc0; v0++) { t += code0[v0, SetVar0[s, v0]] + dChar.ToString(); ; }
-                file.WriteLine(t);
-                for (Byte r = 1; r <= Nrr[s]; r++)
-                {
-                    t = s.ToString() + dChar.ToString(); ;
-                    t += RespNr[PrNow + r].ToString() + dChar.ToString(); ;
-                    //for (UInt16 k = 0; k < Kc; k++) { t += "sk" + k.ToString() + dChar; }
-                    for (UInt16 v = 0; v < Vc; v++) { t += code[v, SetVar[PrNow + r, v]] + dChar.ToString(); }
-                    for (UInt16 v1 = 0; v1 < Vc1; v1++) { t += code1[v1, SetVar1[PrNow + r, v1]] + dChar.ToString(); }
-                    file.WriteLine(t);
-                }
-                t = ""; file.WriteLine(t);
-                PrNow += Nrr[s];
-            }
-
-
-            //file.Close();
-
-        }
+       
 
         public void Frequencies(byte RecordN, UInt16[,] SRdata)
         {
+
+            //ADD TO FREQUENCIES
+
             for (UInt16 v0 = 0; v0 < Vc0; v0++)
             {
                 freq0[v0, SRdata[0, v0]] += 1;
@@ -2073,6 +2016,8 @@ namespace axon_console
 
         public UInt16[,] recodeVars(byte RecordN, string[,] SetVarI)
         {
+
+            //RECODE VARIABLES INTO INTEGERS
 
             UInt16[,] SRdata = new UInt16[maxRperRecordS, maxVnow];
 
@@ -2153,6 +2098,9 @@ namespace axon_console
 
         public StringBuilder OutputFileInfo(string FileName)
         {
+
+            //WRITE FILEINFO TO TEXT FILE
+
             StringBuilder sb = new StringBuilder();
 
             if (FileName.Trim() == "") { FileName = "Randomly created data"; }
@@ -2197,6 +2145,8 @@ namespace axon_console
 
         public StringBuilder OutputFrequencies()
         {
+
+            //WRITE FREQUENCIES TO TEXT FILE
 
             StringBuilder sb = new StringBuilder();
 
@@ -2268,20 +2218,17 @@ namespace axon_console
                 }
             }
             t += "\r\n"; t += "\r\n"; sb.Append(t); t = "";
-            inform("End Recoding Identifiers");
+            //End Recoding Identifiers;
             return sb;
         }
 
-
-        //Save likelihoods for further us (not implemented in thsi app version)
+ 
         public void LikelihoodsSave(string LikelihoodFile)
         {
 
+            //SAVE LIKEHOOD TO USE THEM LATER ON A DIFFERENT DATA FILE (not implemented in this version)
+            
             string FileFirst = "";
-
-
-
-
             try
             {
                 BinaryWriter bw = new BinaryWriter(new FileStream(LikelihoodFile,
@@ -2306,7 +2253,6 @@ namespace axon_console
                 bw.Write(ThresHoldPercentageCriterium);
                 bw.Write(ThresHoldCriterium);
                 bw.Write(DifferenceCriterium);
-                bw.Write(AutoSelection);
                 bw.Write(Linkmethod);
                 bw.Write(MissingsInclude);
 
@@ -2435,6 +2381,9 @@ namespace axon_console
         //Get likelihoods to use again (not implemented in thsi app version)
         public StringBuilder LikelihoodsGet(string LikelihoodFile, string FileName)
         {
+
+            //GET SAVEd LIKEHOOD TO USE THEM LATER ON A DIFFERENT DATA FILE (not implemented in this version)
+
             StringBuilder sb = new StringBuilder();
             try
             {
@@ -2451,24 +2400,17 @@ namespace axon_console
 
                 BinaryReader br = new BinaryReader(new FileStream(LikelihoodFile,
                  FileMode.Open));
-                //      i = br.ReadInt32();
-                //      Console.WriteLine("Integer data: {0}", i);
-                //      d = br.ReadDouble();
-                //      Console.WriteLine("Double data: {0}", d);
-                //      b = br.ReadBoolean();
-                //      Console.WriteLine("Boolean data: {0}", b);
-                //      s = br.ReadString();
-                //      Console.WriteLine("String data: {0}", s);
+                 
 
-                inform("Getting Likelihoods");
+                //Getting Likelihoods;
 
                 UInt16 nVc0;
                 UInt16 nVc;
                 UInt16 nVc1;
 
-                nVc0 = (UInt16)br.Read();  // + 32767);
-                nVc = (UInt16)br.Read();   // + 32767);
-                nVc1 = (UInt16)br.Read();  // + 32767);
+                nVc0 = (UInt16)br.Read();   
+                nVc = (UInt16)br.Read();   
+                nVc1 = (UInt16)br.Read();   
 
                 if ((nVc0 != Vc0))
                 {
@@ -2495,15 +2437,9 @@ namespace axon_console
                 ThresHoldPercentageCriterium = br.ReadInt32();
                 ThresHoldCriterium = br.ReadInt32();
                 DifferenceCriterium = br.ReadInt32();
-                AutoSelection = br.ReadInt32();
                 Linkmethod = br.ReadInt32();
                 MissingsInclude = br.ReadInt32();
-
-                //        redim SelectVar;
-                //        redim SelectVar1;
-                //        redim NcVc0;
-                //        redim NcVc;
-
+ 
 
                 for (UInt16 v0 = 0; (v0 < Vc0); v0++)
                 {
@@ -2555,8 +2491,7 @@ namespace axon_console
                         NcVc1H = NcVc1[v1];
                     }
                 }
-                //        redim PPratio;
-                //        redim ePPratio;
+ 
                 for (UInt16 v0 = 0; (v0 < Vc0); v0++)
                 {
                     for (UInt16 v = 0; (v < Vc); v++)
@@ -2608,61 +2543,18 @@ namespace axon_console
             t = (t + "\\par \\par ");
             t = (t + "\\par \\par ");
             t = (t + "}");
-            //                     ;
-            //                     outfrm.out.SelStart = outfrm.out.text.Length;
-            //LikelihoodSource = 1;
-            //LinkRecords(ThresHoldPercentageCriterium, LikelihoodSource, 0, Linkmethod,"");
-            inform("");
-
+ 
             sb.AppendLine("ok");
             return sb;
         }
          
-
-
-        public void inform(string message) { }
-
-
-        public void AutoSelectVariables()
-        {
-            double hc = 0;
-            UInt16 hh;
-            for (UInt16 v0 = 0; (v0 < Vc0); v0++)
-            {
-                for (UInt16 v = 0; (v < Vc); v++)
-                {
-                    SelectVar[v0, v] = 0;
-                }
-            }
-            for (UInt16 v0 = 0; (v0 < Vc0); v0++)
-            {
-                // TODO: # ... Warning!!! not translated
-                hh = 0;
-                for (UInt16 v = 0; (v < Vc); v++)
-                {
-                    // If Chip[v0, v] < 0.0001 Then
-                    //  If Chip[v0, v] < hc Then hc = Chip[v0, v]: hh = v
-                    // End If
-                    if ((CHIx[v0, v] > 999))
-                    {
-                        if ((CHIx[v0, v] < hc))
-                        {
-                            hc = CHIx[v0, v];
-                        }
-                        hh = v;
-                    }
-                }
-                SelectVar[v0, hh] = 1;
-            }
-            //  For v0 = 1 To Vc0
-            //   For v = 1 To Vc
-            //    If Chip[v0, v] < 0.0001 Then SelectVar[v0, v] = 1 Else SelectVar[v0, v] = 0
-            //   Next v
-            //  Next v0
-        }
+         
+       
 
         public StringBuilder LinkRecords(int CriteriumHandling, double ThresHoldCriterium, double ThresHoldPercentageCriterium, byte IterNumber, int Linkmethod, System.IO.StreamWriter fileScores, Boolean writeLinkage)
         {
+
+            //LINK RECORDS FOR STEP 1 TO STEP n.. BASED IN THE RATIOS OR CHI SQUARES IN PREVIOUS STEPS (STEP 0 TO STEP n..)
 
             StringBuilder sb = new StringBuilder();
 
@@ -2675,10 +2567,8 @@ namespace axon_console
 
             if ((IterNumber == 0))
             {
-
                 t = "Determine Start Classification";
 
-                //LikelihoodSource = 0;
             }
             t += "\r\n";
             sb.Append(t); t = "";
@@ -2737,14 +2627,9 @@ namespace axon_console
                 t = "Difference Criterium : User Specified : " + DifferenceCriterium.ToString("0.00", CultureInfo.InvariantCulture);
             }
             t += "\r\n"; sb.Append(t); t = "";
-            if ((AutoSelection == 1))
-            {
-                t = "Selection of Identifiers : Automatic";
-            }
-            else
-            {
-                t = "Selection of Identifiers : User Specified";
-            }
+ 
+            t = "Selection of Identifiers : All selected";
+             
             t += "\r\n"; sb.Append(t); t = "";
             t += "\r\n"; sb.Append(t); t = "";
 
@@ -2833,7 +2718,7 @@ namespace axon_console
                                         {
                                             if ((SelectVar[v0, v] == 1))
                                             {
-                                                //inform(("Computing Ratio\'s : Indepent " + v0.ToString("0", CultureInfo.InvariantCulture) + " with Dependent " + v.ToString("0.00", CultureInfo.InvariantCulture)));
+                                                //"Computing Ratio\'s : Indepent v0 with Dependent v;
                                                 
 
                                                     UInt64 i = posLi[v0, v] + SRdata[0, v0] * (ulong)NcVc[v] + SRdata[r, v];
@@ -2847,32 +2732,24 @@ namespace axon_console
                             }
                         }
 
-                        //fileScores.WriteLine(Addscore(s, r, PrNow + r, score[PrNow + r]));  //);
-                    }
-
-                    ///????
-
-                    if ((IterNumber > 0))
-                    {
-                        for (UInt16 v1 = 0; v1 < Vc1; v1++)
+                        if ((IterNumber > 0))
                         {
-                            if (SelectVar1[v1] == 1)
+                            for (UInt16 v1 = 0; v1 < Vc1; v1++)
                             {
-                                inform("Computing Ratio\'s : Indepent "
-                                 + v1.ToString("0", CultureInfo.InvariantCulture)); // strange:??? + " with Dependent " + v0.ToString("0", CultureInfo.InvariantCulture));
-
-                                for (byte r = 1; r <= Nrr[s]; r++)
+                                if (SelectVar1[v1] == 1)
                                 {
+                                    //Computing Ratio's : Singular  v1 
+
                                     if (SRdata[r, v1] != missing1[v1] || MissingsInclude == 1)
                                     {
                                         score[(PrNow + r)] = score[PrNow + r] * ePPratio[SRdata[r, Vc + v1], v1];
 
                                     }
+
                                 }
                             }
                         }
-                    }
-
+                    }                 
 
                     for (byte r = 1; r <= Nrr[s]; r++)
                     {
@@ -2936,7 +2813,7 @@ namespace axon_console
                             {
                                 if ((SelectVar[v0, v] == 1))
                                 {
-                                    //inform("Computing Likelihoods : Indepent " + v0.ToString("0", CultureInfo.InvariantCulture) + " with Dependent " + v.ToString("0", CultureInfo.InvariantCulture));
+                                    //Computing Likelihoods : Indepent v0 with Dependent v1;
 
                                     UInt64 i = posLi[v0, v] + SRdata[0, v0] * (ulong)NcVc[v] + SRdata[r, v];
                                     score[PrNow + r] += sPPChi[i];
@@ -2944,7 +2821,29 @@ namespace axon_console
                                 }
                             }
                         }
-                        score[PrNow + r] /= (Ns / 10);  //Convert.ToSingle(Math.Pow(Ns,1));
+
+                   
+                        if ((IterNumber > 0))
+                        {
+                            for (UInt16 v1 = 0; v1 < Vc1; v1++)
+                            {
+                                if (SelectVar1[v1] == 1)
+                                {
+                                    //Computing Ratio\'s : Singulare  v1 ;
+
+                                     
+                                        if (SRdata[r, v1] != missing1[v1] || MissingsInclude == 1)
+                                        {
+                                            score[(PrNow + r)] = score[PrNow + r] * ePPratio[SRdata[r, Vc + v1], v1];
+
+                                        }
+                                     
+                                }
+                            }
+                        }
+                       
+
+                        score[PrNow + r] /= (Ns / 10);  
 
                         if (writeLinkage)
                         {
@@ -2955,83 +2854,86 @@ namespace axon_console
                     PrNow += Nrr[s];
                 }
             }
-            //fileScores.Close();
 
 
-            //double[] scores = new double[MaxGrCat];
-            Nsmall = 0;
-            byte rh;
-            double ll = 99999;
-            double hh = -99999;
-            double lh;
 
-            UInt64 PrNow2 = 0; Byte NrNow = 0; //Int64 PrNowTest = 0;
-            for (UInt64 s = 1; s <= Ns; s++)
+
+            UInt64 PrNow2 = 0;byte NrNow = 0;  byte rh;
+
+            //Create Graph
+            if (DistributionLikelihoodsShow == 1)
             {
-                NrNow = Nrr[s];
+                Nsmall = 0;
+              
+                double ll = 99999;
+                double hh = -99999;
+                double lh;
 
-                for (byte r = 1; r <= NrNow; r++)
+                 PrNow2 = 0;   NrNow = 0; //Int64 PrNowTest = 0;
+                for (UInt64 s = 1; s <= Ns; s++)
                 {
-                    // 'If score(Pr[s] + r) <> -100 Then
-                    if (score[PrNow2 + r] > hh)
-                    {
-                        hh = score[PrNow2 + r];
-                    }
-                    if (score[PrNow2 + r] < ll)
-                    {
-                        ll = score[PrNow2 + r];
-                    }
-                    // 'Else
-                    // ' Nsmall = Nsmall + 1
-                    // 'End If
-                }
-                PrNow2 += NrNow;
-            }
-
-            inform("");
-            // CATAGORY RANGE 1- 100
-            int cNow = 0;
-            lh = (hh - ll);
-
-
-            PrNow2 = 0;
-
-            if (lh != 0)
-            {
-                for (UInt16 c = 0; (c <= NcatGraph); c++)
-                {
-                    scoresV[c] = ll + c * (hh - ll) / NcatGraph;
-                    scoresN[c] = 0;
-                }
-                for (UInt64 s = 1; (s <= Ns); s++)
-                {
-
                     NrNow = Nrr[s];
 
                     for (byte r = 1; r <= NrNow; r++)
                     {
-                        scoresN[Convert.ToUInt64(-.5 + NcatGraph * (score[PrNow2 + r] - ll) / (hh - ll))] += 1;
+                        // 'If score(Pr[s] + r) <> -100 Then
+                        if (score[PrNow2 + r] > hh)
+                        {
+                            hh = score[PrNow2 + r];
+                        }
+                        if (score[PrNow2 + r] < ll)
+                        {
+                            ll = score[PrNow2 + r];
+                        }
+                        // 'Else
+                        // ' Nsmall = Nsmall + 1
+                        // 'End If
                     }
                     PrNow2 += NrNow;
                 }
-            }
-            else
-            {
-                for (byte c = 0; (c <= NcatGraph); c++)
+
+           
+                // CATAGORY RANGE 1- 100
+                int cNow = 0;
+                lh = (hh - ll);
+
+
+                PrNow2 = 0;
+
+                if (lh != 0)
                 {
-                    scoresV[c] = 0;
-                    scoresN[c] = 0;
+                    for (UInt16 c = 0; (c <= NcatGraph); c++)
+                    {
+                        scoresV[c] = ll + c * (hh - ll) / NcatGraph;
+                        scoresN[c] = 0;
+                    }
+                    for (UInt64 s = 1; (s <= Ns); s++)
+                    {
+
+                        NrNow = Nrr[s];
+
+                        for (byte r = 1; r <= NrNow; r++)
+                        {
+                            scoresN[Convert.ToUInt64(-.5 + NcatGraph * (score[PrNow2 + r] - ll) / (hh - ll))] += 1;
+                        }
+                        PrNow2 += NrNow;
+                    }
+                }
+                else
+                {
+                    for (byte c = 0; (c <= NcatGraph); c++)
+                    {
+                        scoresV[c] = 0;
+                        scoresN[c] = 0;
+                    }
                 }
             }
 
             // THRESHOLDCRITERIUM
             if ((ThresHoldCriterium == -99))
             {
-                Threshold = ThresHoldScore(ThresHoldPercentageCriterium);
-                //   For h = NcatGraph To 0 Step -1
-                //    tel = tel + Fix(scores(h))
-                //    If tel <= Ns * 0.95 Then Threshold = (h * lh) + ll
-                //   Next h
+                Threshold = 0;
+                
             }
             else
             {
@@ -3049,11 +2951,9 @@ namespace axon_console
             // CRITERIUMHANDLING
             blocksLinkedN = 0;
             double h = 0;
-            switch (CriteriumHandling)
+            switch (CriteriumHandling)  //IS ALWAYS 3 IN THIS APPLICATION OTHERS ARE IMPLEMENTED IN THE EXTENDED APPLICATION
             {
-
-
-
+                 
                 case 1:
                     PrNow2 = 0;
                     for (UInt64 s = 1; (s <= Ns); s++)
@@ -3114,10 +3014,8 @@ namespace axon_console
                         for (byte r = 1; r <= NrNow; r++)
                         {
 
-                            //zie 2!!
                             if (score[PrNow2 + r] > h && score[PrNow2 + r] > Threshold)
                             {
-                                //h = score[PrNow2 + r];
                                 Hscore[PrNow2 + r] = 1;
                                 linkedNow = true;
                             }
@@ -3125,7 +3023,6 @@ namespace axon_console
                         }
                         if (linkedNow) { blocksLinkedN = (blocksLinkedN + 1); }
                         PrNow2 += NrNow;
-                        //PrNowTest += Nrr[s];
                     }
                     break;
                 case 4:
@@ -3158,7 +3055,7 @@ namespace axon_console
                     }
                     break;
             }
-            // DISTRIBUTION OF NUMBER OF LINKED RECORDS PER SET
+            // DISTRIBUTION OF LINK SCORES OF ALL RECORDS IN ALL BLOCKS
             PrNow2 = 0; int Nin = 0;
             for (UInt64 s = 1; (s <= Ns); s++)
             {
@@ -3211,9 +3108,10 @@ namespace axon_console
                 }
 
             }
-            if ((LinkedSetsShow == 1))
+            if ((LinkedSetsShow == 1))  
             {
 
+                //NOT IN USER WINDOW OF THIS APPLICATION> JUST SHOWS 60 SET IN REPORT
 
                 switch (Linkmethod)
                 {
@@ -3258,10 +3156,6 @@ namespace axon_console
                         }
                     }
                     t += "\r\n"; sb.Append(t); t = "";
-                    if (Convert.ToUInt64(s / 20) == s / 20)
-                    {
-                        inform(("Linking set number " + s.ToString("0", CultureInfo.InvariantCulture)));
-                    }
                     if ((s > 59))
                     {
                         break;
@@ -3271,19 +3165,13 @@ namespace axon_console
                 t += "\r\n"; sb.Append(t); t = "";
 
             }
-            // ' t = "{"
-            // '   t = t & "\deff "
-            // '   For c = 1 To 10
-            // '    t = t & "\tx" & Format(2000 + (c - 1) * 1000)
-            // '   Next c
-            // '   If i = 0 Then
-            // '    t = t & "{\b Likelihood Ratio's : Independent : " & Var0Labels(v0) & " and dependent : " & VarLabels(v) & " : p = " & Format(Chip[v0, v], " 0.0000") & "}"
-            // '    t = t & "\par \par "
+           
 
-
-
-            if ((DistributionLinkedRecordsNShow == 1))
+            if ((DistributionLinkedRecordsNShow == 1)) 
             {
+
+                // SHOWS DISTRIBUTION OF LINK SCORES OF ALL RECORDS IN ALL BLOCKS (BUT ONLY WHEN SHOW GRAPHIC IS TICKED))
+
                 t = "Link step : " + (IterNumber + 1).ToString("0", CultureInfo.InvariantCulture) + " : ";
 
                 switch (Linkmethod)
@@ -3321,8 +3209,6 @@ namespace axon_console
             }
 
 
-
-            inform("");
             return sb;
         }
 
@@ -3330,9 +3216,9 @@ namespace axon_console
         public string Addscore(byte iterN, UInt64 s, byte r, UInt64 rt, double score, double ThresHoldCriterium)
         {
 
-            //char dChar = Delimeter[0];
+            //WRITE THE RATIOS OR CHI SQUARE PROBABILITIES
 
-            t = ""; //file.WriteLine(t);
+            t = ""; 
 
 
             //t += iterN.ToString("0", CultureInfo.InvariantCulture);
@@ -3355,15 +3241,7 @@ namespace axon_console
 
             return t;
         }
-
-        public double ThresHoldScore(double freq)
-        {
-            double ThresHoldScore2 = 0;
-
-            //REDO WITH GRAPH ALGORITMEN
-
-            return ThresHoldScore2;
-        }
+ 
 
 
         public UInt64 KeyCachSaveValueK(FileStream cach, BinaryWriter writer, FileStream cachI, BinaryWriter writerI, UInt64 s, Byte nr, UInt64 posOld, string[] respnrI)
@@ -3387,6 +3265,8 @@ namespace axon_console
             return posNew;
         }
 
+
+        //BELOW IS CACHING TO DISK (NOT IMPLEMENTED IN THIS APPLICATION)
         public string[] KeyCachGetValueK(FileStream cach, BinaryReader reader, FileStream cachI, BinaryReader readerI, UInt64 s)
         {
             string[] respnrI = new string[maxRperRecordS];
