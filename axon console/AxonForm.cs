@@ -149,7 +149,7 @@ namespace axon_console
                     UInt16 iNow = x;
 
 
-                    AxonCalc10 AxC = new AxonCalc10();
+                    AxonCalc11 AxC = new AxonCalc11();
 
 
                     AxC.Delimeter = '/';
@@ -428,7 +428,7 @@ namespace axon_console
                 UInt16 iNow = i;
 
 
-                AxonCalc10 AxC = new AxonCalc10();
+                AxonCalc11 AxC = new AxonCalc11();
 
 
                 AxC.Delimeter = '/';
@@ -660,7 +660,7 @@ namespace axon_console
 
             //BUILD ARANDOM TEST FILE
 
-            AxonCalc10 AxC = new AxonCalc10();
+            AxonCalc11 AxC = new AxonCalc11();
 
             string fileName = outputFile;
 
@@ -909,6 +909,7 @@ namespace axon_console
                         }
 
                     }
+
                 }
             if (!multi)
             {

@@ -93,6 +93,7 @@
       <DependentUpon>AxonForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AxonStatistics10.cs" />
+    <Compile Include="AxonStatistics11.cs" />
     <Compile Include="dataResults.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
