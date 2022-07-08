@@ -2830,14 +2830,19 @@ namespace axon_console
                         {
                             score[(PrNow + r)] = Convert.ToSingle(Math.Log(Convert.ToDouble(score[(PrNow + r)])));
                         }
-                        else
+                        else if(score[(PrNow + r)] < 0)
                         {
-                            score[(PrNow + r)] = -7;
+                            score[(PrNow + r)] =Math.Sign(score[(PrNow + r)]) * Convert.ToSingle(Math.Log(Convert.ToDouble(-score[(PrNow + r)]))); ;
                         }
-                        if ((score[(PrNow + r)] < -7))
-                        {
-                            score[(PrNow + r)] = -7;
-                        }
+
+                        //else
+                        //{
+                            //score[(PrNow + r)] = -7;
+                        //}
+                        //if ((score[(PrNow + r)] < -7))
+                        //{
+                            //score[(PrNow + r)] = -7;
+                        //}
 
                         if (writeLinkage)
                         {
