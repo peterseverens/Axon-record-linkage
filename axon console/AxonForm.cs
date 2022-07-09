@@ -835,7 +835,7 @@ namespace axon_console
 
             //Point[] points = new Point[4];
             //points[0] = new Point(m, m);
-            double HighNow = 0;
+            double hn = -9999;
             float hv = -99999; float lv = 999999;
             //multi = false;
             if (multi)
@@ -903,7 +903,7 @@ namespace axon_console
 
                         for (int c = 0; (c < 101); c++)
                         {
-                            if (scoresN[i, iter, c] > HighNow) { HighNow = scoresN[i, iter, c]; }
+                            if (scoresN[i, iter, c] > hn) {hn = scoresN[i, iter, c]; }
                             if (scoresV[i, iter, c] > hv) hv = Convert.ToSingle(scoresV[i, iter, c]);
                             if (scoresV[i, iter, c] < lv) lv = Convert.ToSingle(scoresV[i, iter, c]);
                         }
@@ -913,6 +913,9 @@ namespace axon_console
                 }
             if (!multi)
             {
+
+                 
+
                 for (UInt16 i = 0; i < fileNow.Length; i++)
                 {
                     for (byte iter = 0; iter < iterNumber[i]; iter++)
@@ -933,41 +936,41 @@ namespace axon_console
                         float wwStart = ww * startD;
 
                         float x = 0;
-                        for (UInt16 c = 0; c < 101; c++)
-                        {
-                            if (sizeD == 1)
-                            {
-                                x = m + ww * c / 101;
-                                double cutOff = 0; if (linkMethodNow == 1) cutOff = 1;
-
-                                if (scoresV[i, iter, c] < cutOff)
-                                {
-                                    g.DrawLine(penNowR, x, hw + m + 2, x, hw + m + 4);
-                                }
-                                else
-                                {
-                                    g.DrawLine(penNowB, x, hw + m + 2, x, hw + m + 4);
-                                }
-                            }
-                        }
                         if (i == 0 & iter == 0)
                         {
                             x = m;
-                            g.DrawString(scoresV[i, iter, 0].ToString("0.00", CultureInfo.InvariantCulture), fontNow, brushNow[4], x, hw + m + 6);
+                            g.DrawString(lv.ToString("0.00", CultureInfo.InvariantCulture), fontNow, brushNow[4], x, hw + m + 6);
                             x = m + ww;
-                            string textH = scoresV[i, iter, 100].ToString("0.00", CultureInfo.InvariantCulture);
+                            string textH = hv.ToString("0.00", CultureInfo.InvariantCulture);
                             System.Drawing.SizeF fontW = g.MeasureString(textH, fontNow);
                             g.DrawString(textH, fontNow, brushNow[4], x - fontW.Width, hw + m + 6);
+
+                            //for (UInt16 c = 0; c < 101; c++)
+                            //{
+                            //    x = m + ww * c / 101;
+                            //    double cutOff = 0; if (linkMethodNow == 1) cutOff = 1;
+                            //    if (scoresV[i, iter, c] < cutOff)
+                            //    {
+                            //        g.DrawLine(penNowR, x, hw + m + 2, x, hw + m + 4);
+                            //    }
+                            //    else
+                            //    {
+                            //        g.DrawLine(penNowB, x, hw + m + 2, x, hw + m + 4);
+                            //    }
+                            //}
                         }
+                     
 
                         for (UInt16 c = 0; c < 101; c++)
                         {
                             x = m + wwStart + wwAdjusted * c / 101;
-                            float y = m + hw - (hw * Convert.ToSingle(scoresN[i, iter, c]) / Convert.ToSingle(HighNow));
+                            float y = m + hw - (hw * Convert.ToSingle(scoresN[i, iter, c]) / Convert.ToSingle(hn));
 
-                            if (iter < 4) { g.DrawLine(penNow[iter], xOld, yOld, x, y); }
-                            if (iter > 3) { g.DrawLine(penNow[4], xOld, yOld, x, y); }
-
+                            if (c > 0)
+                            {
+                                if (iter < 4) { g.DrawLine(penNow[iter], xOld, yOld, x, y); }
+                                if (iter > 3) { g.DrawLine(penNow[4], xOld, yOld, x, y); }
+                            }
                             xOld = x;
                             yOld = y;
                         }
