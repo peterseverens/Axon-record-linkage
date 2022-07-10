@@ -2828,11 +2828,16 @@ namespace axon_console
                     {
                         if ((score[(PrNow + r)] > 0))
                         {
-                            score[(PrNow + r)] = Convert.ToSingle(Math.Log(Convert.ToDouble(score[(PrNow + r)])));
+                            if (score[(PrNow + r)] < 0.001)
+                            {
+                                score[(PrNow + r)] = (float)0.001;
+                            }
+                                score[(PrNow + r)] = Convert.ToSingle(Math.Log(Convert.ToDouble(score[(PrNow + r)]),10));
                         }
                         else if(score[(PrNow + r)] < 0)
                         {
-                            score[(PrNow + r)] =Math.Sign(score[(PrNow + r)]) * Convert.ToSingle(Math.Log(Convert.ToDouble(-score[(PrNow + r)]))); ;
+                            t += "\r\n"; sb.Append(t); t = "Negative bayesian score!! Cannot calculate log!";
+                            score[(PrNow + r)] = (float)Math.Log(.001, 10); 
                         }
 
                         //else

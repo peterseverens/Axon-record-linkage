@@ -849,7 +849,7 @@ namespace axon_console
                     case -1:
                         t = "Distrib. of Likelihoods (obs/exp) : total link %: " + percentageLinkedLastMean.ToString("0.00", CultureInfo.InvariantCulture); break;
                     case 0:
-                        gTitel = "Distrib. of Likelihoods : step : total link %: " + percentageLinkedLastMean.ToString("0.00", CultureInfo.InvariantCulture); break;
+                        gTitel = "Distrib. of Log Likelihoods : step : total link %: " + percentageLinkedLastMean.ToString("0.00", CultureInfo.InvariantCulture); break;
                     case 1:
                         gTitel = "Distrib. of CHI Squares (*10/n) : total link %: " + percentageLinkedLastMean.ToString("0.00", CultureInfo.InvariantCulture);
                         break;
@@ -877,7 +877,7 @@ namespace axon_console
                                             + nSmall[0].ToString("0", CultureInfo.InvariantCulture) + " < -99), link %: " + percentageLinked[i, iter].ToString("0.00", CultureInfo.InvariantCulture);
                                 break;
                             case 0:
-                                gTitel = "Distrib. of Likelihoods : step : "
+                                gTitel = "Distrib. of Log Likelihoods : step : "
                                             + iter.ToString("0", CultureInfo.InvariantCulture) + " (N = "
                                             + nSmall[0].ToString("0.00", CultureInfo.InvariantCulture) + " < -99), link %: " + percentageLinked[i, iter].ToString("0.00", CultureInfo.InvariantCulture); ;
                                 break;
