@@ -1238,14 +1238,14 @@ namespace axon_console
                             if (IterNumber > 0)
                             {
 
- 
-                                Single observedRatio = (observed / N) / (notobserved / Nn);
-                                Single expectedRatio = 1;
-
-                                Single singularChi= Convert.ToSingle(Math.Pow((observedRatio - expectedRatio), 2) / expectedRatio * Math.Sign(observedRatio - expectedRatio));
-
-                                if (observed > 0 && N > 0 && Nn > 0)
+                                if (notobserved > 0 && N > 0 && Nn > 0)
                                 {
+                                    Single observedRatio = (observed / N) / (notobserved / Nn);
+                                    Single expectedRatio = 1;
+
+                                    Single singularChi = Convert.ToSingle(Math.Pow((observedRatio - expectedRatio), 2) / expectedRatio * Math.Sign(observedRatio - expectedRatio));
+
+
                                     ePPratio[c1, v1] = singularChi;
 
                                 }
