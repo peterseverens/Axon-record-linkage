@@ -1240,6 +1240,9 @@ namespace axon_console
 
                                 if (notobserved > 0 && N > 0 && Nn > 0)
                                 {
+                                    observed = ePP[c1, v1];
+                                    notobserved = ePPn[c1, v1];
+
                                     Single observedRatio = (observed / N) / (notobserved / Nn);
                                     Single expectedRatio = 1;
 
@@ -1406,8 +1409,7 @@ namespace axon_console
                         sb.Append(t); t = "";
                     }
                 }
-                if (Linkmethod == 0)
-                {
+                 
                     if (Linkmethod == 0) { t = "\r\n"; ; t += "Likelihood Ratio's Within"; }
                     t += "\r\n";
 
@@ -1421,11 +1423,11 @@ namespace axon_console
                         t += "\r\n";
                         for (UInt16 c = 0; (c < NcVc1[v1]); c++)
                         {
-                            t += ePPratio[c, v1].ToString("0.00", CultureInfo.InvariantCulture); t += ",";
+                            t += ePPratio[c, v1].ToString("0.0000000", CultureInfo.InvariantCulture); t += ",";
                         }
                         t += "\r\n";
                     }
-                }
+                 
                 t += "\r\n"; sb.Append(t); t = "";
 
             }
@@ -1476,7 +1478,7 @@ namespace axon_console
                 t += "\r\n"; sb.Append(t); t = "";
 
 
-                t = "\r\n"; ; t += "Likelihood Ratio's Within";
+                t = "\r\n"; ; t += "Likelihood Ratio's Within (Chi Squared)";
                 t += "\r\n";
 
                 for (UInt16 v1 = 0; (v1 < Vc1); v1++)
@@ -1489,7 +1491,7 @@ namespace axon_console
                     t += "\r\n";
                     for (UInt16 c = 0; (c < NcVc1[v1]); c++)
                     {
-                        t += ePPratio[c, v1].ToString("0.00", CultureInfo.InvariantCulture); t += ",";
+                        t += ePPratio[c, v1].ToString("0.0000000", CultureInfo.InvariantCulture); t += ",";
                     }
                     t += "\r\n";
                 }
