@@ -2,9 +2,8 @@
 
 Scope
 
-- matching tracking cookies
-- database criminal investigation
-- preparing research data from different sources
+- match data from different sources in criminal investigations
+- prepare research data from different sources
 
 How it works
 
