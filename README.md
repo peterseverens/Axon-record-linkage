@@ -27,7 +27,7 @@ In the example below there are 5 independent, 6 dependent and one singular varia
 The data set is arranged in groups. The first record is always the first record of the independent dataset. The records after that are the candidates (after a raw matching with the independent dataset). Both the independent and the dependent records start with the block number followed by the identifying key of the record. Then the field values follow.
 Only the dependent records have singular fields values (after the dependent field values)
 
-Choose the Test tab to build a test set. You can choose the number of field (variables) and the number of records. It is recommended to do is to test whether the dataset you are planning to input can be handled by the RAM of your server or desktop.
+Choose the Test tab to build a test set. You can choose the number of field (variables) and the number of records. It is recommended to test whether the dataset you are planning to input can be handled by the RAM of your server or desktop.
 
 
 example.prt
@@ -67,7 +67,7 @@ The first one is the .rpt file. It gives a description of all the iterations and
 The second is the .frq file. It gives the frequencies of all the input fields. Check it to be sure your input is as expected.
 The third is the .lin file. This file outputs within each pre matched block the linkage probabilities of each dependent record with the dependent one. 
 
-The first field of the .lin file is the block number followed by the serial number of the dependent record. Then the Id of the independent record is given followed by the Id of the candidate dependent record. After that is the probability that the dependent records is a candidate link for the independent one. As you can see in the example is record 1 of block 1 the best candidate of the three dependent records in the block. Record 3 has a very low probability of being a candidate.
+The first field of the .lin file is the block number followed by the serial number of the dependent record. Then the Id of the independent record is given followed by the Id of the candidate dependent record. After that is the probability that the dependent records is a candidate link for the independent one. In the example i record 1 of block 1 the best candidate of the three dependent records in the block. Record 3 has a very low probability of being a candidate.
 
 example.lin
 ______________________________________________________
